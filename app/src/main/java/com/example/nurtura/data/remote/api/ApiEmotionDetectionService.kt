@@ -1,4 +1,4 @@
-package com.example.nurtura.utils
+package com.example.nurtura.data.remote.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

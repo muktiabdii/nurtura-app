@@ -1,4 +1,4 @@
-package com.example.nurtura.utils
+package com.example.nurtura.data.remote.api
 
 import com.example.nurtura.data.model.EmotionDetectionResponse
 import okhttp3.MultipartBody
