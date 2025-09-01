@@ -1,6 +1,6 @@
 package com.example.nurtura.data.repository
 
-import com.example.nurtura.di.FirebaseProvider
+import com.example.nurtura.data.remote.firebase.FirebaseProvider
 import com.example.nurtura.domain.repository.AuthRepository
 import kotlinx.coroutines.tasks.await
 

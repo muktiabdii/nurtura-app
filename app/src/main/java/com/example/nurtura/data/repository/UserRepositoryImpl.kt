@@ -2,7 +2,7 @@ package com.example.nurtura.data.repository
 
 import com.example.nurtura.cache.UserData
 import com.example.nurtura.data.datastore.PreferencesManager
-import com.example.nurtura.di.FirebaseProvider
+import com.example.nurtura.data.remote.firebase.FirebaseProvider
 import com.example.nurtura.domain.model.User
 import com.example.nurtura.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow

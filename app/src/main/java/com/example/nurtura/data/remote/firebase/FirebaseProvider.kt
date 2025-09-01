@@ -1,4 +1,4 @@
-package com.example.nurtura.di
+package com.example.nurtura.data.remote.firebase
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
