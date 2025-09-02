@@ -90,7 +90,7 @@ fun OnBoardingContent(currentPage: Int, modifier: Modifier = Modifier) {
                     id = when (currentPage) {
                         0 -> R.drawable.image_onboard_1
                         1 -> R.drawable.image_onboard_2
-                        else -> R.drawable.image_onboard_2
+                        else -> R.drawable.image_onboard_3
                     }
                 ),
                 contentDescription = null,

@@ -75,7 +75,8 @@ fun OnBoardingScreen(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
+                userScrollEnabled = false
             ) { page ->
                 OnBoardingContent(currentPage = page)
             }
