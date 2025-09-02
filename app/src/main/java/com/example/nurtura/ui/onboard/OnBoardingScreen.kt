@@ -93,7 +93,7 @@ fun OnBoardingScreen(
                 Button(
                     onClick = {
                         if (pagerState.currentPage == 2) {
-                            navController.navigate("main") {
+                            navController.navigate("login") {
                                 popUpTo("onboarding") { inclusive = true }
                             }
                         } else {
@@ -107,7 +107,7 @@ fun OnBoardingScreen(
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .height(48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Alt2),
-                    shape = RoundedCornerShape(24.dp)
+                    shape = RoundedCornerShape(14.dp)
                 ) {
                     Text(
                         text = if (pagerState.currentPage == 2) "Mulai" else "Lanjut",

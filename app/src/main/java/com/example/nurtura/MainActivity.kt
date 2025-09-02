@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.nurtura.ui.auth.LoginScreen
+import com.example.nurtura.ui.auth.RegisterScreen
 import com.example.nurtura.ui.home.MainScreen
 import com.example.nurtura.ui.onboard.OnBoardingScreen
 import com.example.nurtura.ui.splash.SplashScreen
@@ -36,6 +38,14 @@ class MainActivity : ComponentActivity() {
 
                         composable("onboarding") {
                             OnBoardingScreen(navController = navController)
+                        }
+
+                        composable("login") {
+                            LoginScreen(navController = navController)
+                        }
+
+                        composable("register") {
+                            RegisterScreen(navController = navController)
                         }
 
                         composable("main") {
