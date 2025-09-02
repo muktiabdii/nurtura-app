@@ -33,6 +33,9 @@ class AuthRepositoryImpl: AuthRepository {
         email: String,
         password: String,
         passwordConfirmation: String,
+        pregnancyAge: String,
+        healthNotes: String,
+        location: String,
         onResult: (Boolean, String?) -> Unit
     ) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -47,7 +50,10 @@ class AuthRepositoryImpl: AuthRepository {
                         val userData = hashMapOf(
                             "uid" to userId,
                             "name" to name,
-                            "email" to email
+                            "email" to email,
+                            "pregnancyAge" to pregnancyAge,
+                            "healthNotes" to healthNotes,
+                            "location" to location
                         )
                         userRef.setValue(userData)
                             .addOnSuccessListener {

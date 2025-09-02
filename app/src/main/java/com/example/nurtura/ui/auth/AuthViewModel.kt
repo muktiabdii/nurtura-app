@@ -17,6 +17,19 @@ sealed class State {
     data class Error(val message: String) : State()
 }
 
+// state register
+data class RegisterUiState(
+    val step: Int = 1,
+    val username: String = "",
+    val email: String = "",
+    val password: String = "",
+    val passwordConfirmation: String = "",
+    val pregnancyAge: String = "",
+    val healthNotes: String = "",
+    val location: String = "",
+    val state: State = State.Idle
+)
+
 class AuthViewModel(
     private val authUseCase: AuthUseCase,
     private val userUseCase: UserUseCase
@@ -26,12 +39,62 @@ class AuthViewModel(
     val loginState: StateFlow<State> = _loginState
 
     // register state
-    private val _registerState = MutableStateFlow<State>(State.Idle)
-    val registerState: StateFlow<State> = _registerState
+    private val _registerUiState = MutableStateFlow(RegisterUiState())
+    val registerUiState: StateFlow<RegisterUiState> = _registerUiState
 
     // forgot password state
     private val _forgotPasswordState = MutableStateFlow<State>(State.Idle)
     val forgotPasswordState: StateFlow<State> = _forgotPasswordState
+
+    // update register state
+    fun updateUsername(username: String) {
+        _registerUiState.value = _registerUiState.value.copy(username = username)
+    }
+
+    fun updateEmail(email: String) {
+        _registerUiState.value = _registerUiState.value.copy(email = email)
+    }
+
+    fun updatePassword(password: String) {
+        _registerUiState.value = _registerUiState.value.copy(password = password)
+    }
+
+    fun updatePasswordConfirmation(passwordConfirmation: String) {
+        _registerUiState.value = _registerUiState.value.copy(passwordConfirmation = passwordConfirmation)
+    }
+
+    fun updatePregnancyAge(pregnancyAge: String) {
+        _registerUiState.value = _registerUiState.value.copy(pregnancyAge = pregnancyAge)
+    }
+
+    fun updateHealthNotes(healthNotes: String) {
+        _registerUiState.value = _registerUiState.value.copy(healthNotes = healthNotes)
+    }
+
+    fun updateLocation(location: String) {
+        _registerUiState.value = _registerUiState.value.copy(location = location)
+    }
+
+    // navigasi step
+    fun nextStep() {
+        val current = _registerUiState.value.step
+        if (current < 3) {
+            _registerUiState.value = _registerUiState.value.copy(step = current + 1)
+        }
+    }
+
+    fun previousStep() {
+        val current = _registerUiState.value.step
+        if (current > 1) {
+            _registerUiState.value = _registerUiState.value.copy(step = current - 1)
+        }
+    }
+
+    fun goToStep(step: Int) {
+        if (step in 1..3) {
+            _registerUiState.value = _registerUiState.value.copy(step = step)
+        }
+    }
 
     // reset state
     fun resetLoginState() {
@@ -39,7 +102,7 @@ class AuthViewModel(
     }
 
     fun resetRegisterState() {
-        _registerState.value = State.Idle
+        _registerUiState.value = RegisterUiState()
     }
 
     fun resetForgotPasswordState() {
@@ -72,16 +135,22 @@ class AuthViewModel(
     }
 
     // function register
-    fun register(
-        name: String,
-        email: String,
-        password: String,
-        passwordConfirmation: String
-    ) {
+    fun register() {
         viewModelScope.launch {
-            _registerState.value = State.Loading
-            authUseCase.register(name, email, password, passwordConfirmation) { success, message ->
-                _registerState.value = if (success) State.Success else State.Error(message ?: "Register gagal")
+            _registerUiState.value = _registerUiState.value.copy(state = State.Loading)
+            val currentState = _registerUiState.value
+            authUseCase.register(
+                name = currentState.username,
+                email = currentState.email,
+                password = currentState.password,
+                passwordConfirmation = currentState.passwordConfirmation,
+                pregnancyAge = currentState.pregnancyAge,
+                healthNotes = currentState.healthNotes,
+                location = currentState.location
+            ) { success, message ->
+                _registerUiState.value = _registerUiState.value.copy(
+                    state = if (success) State.Success else State.Error(message ?: "Register gagal")
+                )
             }
         }
     }

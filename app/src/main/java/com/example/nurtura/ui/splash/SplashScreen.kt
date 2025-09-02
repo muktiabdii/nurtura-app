@@ -1,5 +1,6 @@
 package com.example.nurtura.ui.splash
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -31,11 +32,15 @@ import com.example.nurtura.ui.theme.White
 @Composable
 fun SplashScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SplashViewModel
 ) {
     var startAnimation by remember { mutableStateOf(false) }
     val alphaAnim = remember { Animatable(0f) }
     val textReveal = remember { Animatable(0f) }
+
+    val isOnBoardingShown by viewModel.isOnBoardingShown().collectAsState(initial = false)
+    val userUid by viewModel.getUserUidFlow().collectAsState(initial = null)
 
     LaunchedEffect(true) {
         startAnimation = true
@@ -55,7 +60,33 @@ fun SplashScreen(
         )
 
         delay(2000)
-        navController.navigate("onboarding")
+
+        Log.d("splash", "isOnBoardingShown: $isOnBoardingShown")
+
+        // kalau onboarding belum ditampilkan
+        if (!isOnBoardingShown) {
+            navController.navigate("onboarding") {
+                popUpTo("splash") { inclusive = true }
+            }
+        }
+
+        else {
+
+            // kalau sudah onboarding tapi belum login
+            if (userUid.isNullOrEmpty()) {
+                navController.navigate("login") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
+
+            // kalau sudah onboarding dan sudah login
+            else {
+                viewModel.loadUser(userUid!!)
+                navController.navigate("main") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
+        }
     }
 
     Box(

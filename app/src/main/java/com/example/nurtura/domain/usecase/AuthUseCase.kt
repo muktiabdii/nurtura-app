@@ -5,7 +5,10 @@ import com.example.nurtura.domain.repository.AuthRepository
 class AuthUseCase(private val authRepository: AuthRepository) {
 
     // function login
-    suspend fun login(email: String, password: String): Result<String> {
+    suspend fun login(
+        email: String,
+        password: String): Result<String>
+    {
         val validateLogin = validateLogin(email, password)
         if (validateLogin != null) {
             return Result.failure(Exception(validateLogin))
@@ -23,18 +26,34 @@ class AuthUseCase(private val authRepository: AuthRepository) {
 
 
     // function register
-    fun register(name: String, email: String, password: String, passwordConfirmation: String, onResult: (Boolean, String?) -> Unit) {
-        val validateRegister = validateRegister(name, email, password, passwordConfirmation)
-        if (validateRegister != null){
-            onResult(false, validateRegister)
-            return
-        }
-        authRepository.register(name.trim(), email.trim(), password.trim(), passwordConfirmation.trim(), onResult)
+    fun register(
+        name: String,
+        email: String,
+        password: String,
+        passwordConfirmation: String,
+        pregnancyAge: String,
+        healthNotes: String,
+        location: String,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        authRepository.register(
+            name.trim(),
+            email.trim(),
+            password.trim(),
+            passwordConfirmation.trim(),
+            pregnancyAge.trim(),
+            healthNotes.trim(),
+            location.trim(),
+            onResult
+        )
     }
 
 
     // function forgot password
-    fun forgotPassword(email: String, onResult: (Boolean, String?) -> Unit) {
+    fun forgotPassword(
+        email: String,
+        onResult: (Boolean, String?) -> Unit
+    ) {
         val validateForgotPassword = validateForgotPassword(email)
         if (validateForgotPassword != null){
             onResult(false, validateForgotPassword)
@@ -55,26 +74,6 @@ class AuthUseCase(private val authRepository: AuthRepository) {
 
         if (password.length < 8) {
             return "Password harus lebih dari 8 karakter"
-        }
-        return null
-    }
-
-    // function validasi register
-    private fun validateRegister(name: String, email: String, password: String, passwordConfirmation: String): String? {
-        if (name.trim().isEmpty() || email.trim().isEmpty() || password.trim().isEmpty() || passwordConfirmation.trim().isEmpty()) {
-            return "Semua field harus diisi"
-        }
-
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            return "Format email salah"
-        }
-
-        if (password.length < 8) {
-            return "Password harus lebih dari 8 karakter"
-        }
-
-        if (password != passwordConfirmation) {
-            return "Konfirmasi password tidak sesuai"
         }
         return null
     }

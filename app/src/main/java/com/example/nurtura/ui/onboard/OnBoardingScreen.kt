@@ -38,11 +38,13 @@ import com.example.nurtura.ui.theme.White
 import kotlinx.coroutines.launch
 import com.example.nurtura.R
 import com.example.nurtura.ui.common.PageIndicators
+import com.example.nurtura.ui.splash.SplashViewModel
 
 @Composable
 fun OnBoardingScreen(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: SplashViewModel
 ) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
@@ -93,10 +95,15 @@ fun OnBoardingScreen(
                 Button(
                     onClick = {
                         if (pagerState.currentPage == 2) {
-                            navController.navigate("login") {
-                                popUpTo("onboarding") { inclusive = true }
+                            scope.launch {
+                                viewModel.setOnBoardingShown()
+                                navController.navigate("login") {
+                                    popUpTo("onboarding") { inclusive = true }
+                                }
                             }
-                        } else {
+                        }
+
+                        else {
                             scope.launch {
                                 pagerState.animateScrollToPage(pagerState.currentPage + 1)
                             }
@@ -107,7 +114,7 @@ fun OnBoardingScreen(
                         .padding(horizontal = 12.dp, vertical = 16.dp)
                         .height(48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Alt2),
-                    shape = RoundedCornerShape(14.dp)
+                    shape = RoundedCornerShape(24.dp)
                 ) {
                     Text(
                         text = if (pagerState.currentPage == 2) "Mulai" else "Lanjut",

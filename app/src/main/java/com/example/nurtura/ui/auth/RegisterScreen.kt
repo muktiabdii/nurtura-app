@@ -1,5 +1,6 @@
 package com.example.nurtura.ui.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -29,13 +31,11 @@ import com.example.nurtura.ui.theme.*
 
 @Composable
 fun RegisterScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: AuthViewModel
 ) {
-    var fullname by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
+
+    val registerState by viewModel.registerUiState.collectAsState()
 
     Box(
         modifier = Modifier
@@ -132,7 +132,11 @@ fun RegisterScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
-                                .clickable { navController.navigate("login") },
+                                .clickable {
+                                    navController.navigate("login") {
+                                        popUpTo("register") { inclusive = true }
+                                    }
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -175,26 +179,6 @@ fun RegisterScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                // full name
-                Text(
-                    text = "Full Name",
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
-                        color = Accent
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                InputFormField(
-                    value = fullname,
-                    onValueChange = { fullname = it },
-                    placeholder = "masukkan full name",
-                    leadingIcon = R.drawable.ic_user
-                )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
                 // username
                 Text(
                     text = "Username",
@@ -207,8 +191,8 @@ fun RegisterScreen(
                 )
 
                 InputFormField(
-                    value = username,
-                    onValueChange = { username = it },
+                    value = registerState.username,
+                    onValueChange = { viewModel.updateUsername(it) },
                     placeholder = "masukkan username",
                     leadingIcon = R.drawable.ic_user
                 )
@@ -227,8 +211,8 @@ fun RegisterScreen(
                 )
 
                 InputFormField(
-                    value = email,
-                    onValueChange = { email = it },
+                    value = registerState.email,
+                    onValueChange = { viewModel.updateEmail(it) },
                     placeholder = "masukkan email",
                     leadingIcon = R.drawable.ic_email
                 )
@@ -247,9 +231,30 @@ fun RegisterScreen(
                 )
 
                 InputFormField(
-                    value = password,
-                    onValueChange = { password = it },
+                    value = registerState.password,
+                    onValueChange = { viewModel.updatePassword(it) },
                     placeholder = "masukkan password",
+                    leadingIcon = R.drawable.ic_lock,
+                    isPassword = true
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                // konfirmasi password
+                Text(
+                    text = "Konfirmasi Password",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                        color = Accent
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                InputFormField(
+                    value = registerState.passwordConfirmation,
+                    onValueChange = { viewModel.updatePasswordConfirmation(it) },
+                    placeholder = "masukkan konfirmasi password",
                     leadingIcon = R.drawable.ic_lock,
                     isPassword = true
                 )
@@ -260,8 +265,10 @@ fun RegisterScreen(
             // register button
             ActionButton(
                 text = "Lanjut",
-                onClick = {  },
-                isLoading = isLoading
+                onClick = {
+                    viewModel.nextStep()
+                    navController.navigate("register-additional-info")
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -286,7 +293,11 @@ fun RegisterScreen(
                         fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
                         color = Primary
                     ),
-                    modifier = Modifier.clickable { navController.navigate("login") }
+                    modifier = Modifier.clickable {
+                        navController.navigate("login") {
+                            popUpTo("register") { inclusive = true }
+                        }
+                    }
                 )
             }
 

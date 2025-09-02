@@ -1,5 +1,6 @@
 package com.example.nurtura.ui.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -29,11 +31,36 @@ import com.example.nurtura.ui.theme.*
 
 @Composable
 fun LoginScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: AuthViewModel
 ) {
+
+    val context = LocalContext.current
+    val loginState by viewModel.loginState.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
+
+    when (loginState) {
+        is State.Success -> {
+            LaunchedEffect(Unit) {
+                navController.navigate("main") {
+                    popUpTo("login") { inclusive = true }
+                }
+
+                viewModel.resetLoginState()
+            }
+        }
+
+        is State.Error -> {
+            val message = (loginState as State.Error).message
+            LaunchedEffect(message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel.resetLoginState()
+            }
+        }
+
+        else -> Unit
+    }
 
     Box(
         modifier = Modifier
@@ -151,7 +178,11 @@ fun LoginScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .fillMaxHeight()
-                                .clickable { navController.navigate("register") },
+                                .clickable {
+                                    navController.navigate("register") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -234,8 +265,8 @@ fun LoginScreen(
             // login button
             ActionButton(
                 text = "Login",
-                onClick = {  },
-                isLoading = isLoading
+                onClick = { viewModel.login(email, password) },
+                isLoading = loginState is State.Loading
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -281,7 +312,11 @@ fun LoginScreen(
                         fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
                         color = Primary
                     ),
-                    modifier = Modifier.clickable { navController.navigate("register") }
+                    modifier = Modifier.clickable {
+                        navController.navigate("register") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }
                 )
             }
 

@@ -30,11 +30,11 @@ import com.example.nurtura.ui.theme.Light
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputFormField(
+    modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    leadingIcon: Int,
-    modifier: Modifier = Modifier,
+    leadingIcon: Int? = null,
     isPassword: Boolean = false
 ) {
     val visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
@@ -52,10 +52,12 @@ fun InputFormField(
             )
         },
         leadingIcon = {
-            Image(
-                painter = painterResource(id = leadingIcon),
-                contentDescription = null
-            )
+            if (leadingIcon != null) {
+                Image(
+                    painter = painterResource(id = leadingIcon),
+                    contentDescription = null
+                )
+            }
         },
         modifier = modifier
             .fillMaxWidth()
