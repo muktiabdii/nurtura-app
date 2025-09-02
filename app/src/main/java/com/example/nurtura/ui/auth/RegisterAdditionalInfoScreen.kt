@@ -99,7 +99,7 @@ fun RegisterAdditionalInfoScreen(
                 Image(
                     painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "Back",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(40.dp)
                 )
             }
 

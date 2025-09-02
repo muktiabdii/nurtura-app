@@ -51,14 +51,14 @@ fun InputFormField(
                 )
             )
         },
-        leadingIcon = {
-            if (leadingIcon != null) {
+        leadingIcon = if (leadingIcon != null) {
+            {
                 Image(
                     painter = painterResource(id = leadingIcon),
                     contentDescription = null
                 )
             }
-        },
+        } else null, // <- kalau null, tidak render slot leadingIcon
         modifier = modifier
             .fillMaxWidth()
             .height(50.dp),
@@ -68,9 +68,7 @@ fun InputFormField(
         keyboardOptions = if (isPassword) KeyboardOptions(keyboardType = KeyboardType.Password) else KeyboardOptions.Default,
         textStyle = TextStyle(
             fontSize = 13.sp,
-            fontFamily = FontFamily(
-                Font(R.font.raleway_medium)
-            )
+            fontFamily = FontFamily(Font(R.font.raleway_medium))
         ),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Light,
