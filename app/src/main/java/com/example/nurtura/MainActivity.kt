@@ -15,6 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.nurtura.ui.home.MainScreen
+import com.example.nurtura.ui.onboard.OnBoardingScreen
+import com.example.nurtura.ui.splash.SplashScreen
 import com.example.nurtura.ui.theme.NurturaTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,8 +28,16 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "main",
+                        startDestination = "splash",
                     ) {
+                        composable("splash") {
+                            SplashScreen(navController = navController)
+                        }
+
+                        composable("onboarding") {
+                            OnBoardingScreen(navController = navController)
+                        }
+
                         composable("main") {
                             MainScreen()
                         }
