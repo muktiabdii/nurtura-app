@@ -39,7 +39,7 @@ import com.example.nurtura.ui.theme.*
 fun PaymentConfirmationScreen(
     id: Int,
     navController: NavController,
-    viewModel: MyDocViewModel // ✅ ViewModel dikirim dari Main Screen
+    viewModel: MyDocViewModel
 ) {
     val clipboardManager = LocalClipboardManager.current
     val textToCopy = "0110 2222 1111 000"
@@ -66,7 +66,8 @@ fun PaymentConfirmationScreen(
             .background(White)
             .verticalScroll(rememberScrollState())
     ) {
-        // ✅ Top Bar
+
+        // header
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,7 +112,7 @@ fun PaymentConfirmationScreen(
             }
         }
 
-        // ✅ Scrollable Content
+        // main content
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -119,7 +120,7 @@ fun PaymentConfirmationScreen(
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            // ✅ Doctor Info Card
+            // doctor info card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -129,7 +130,8 @@ fun PaymentConfirmationScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    // Doctor Image
+
+                    // doctor image
                     Box(
                         modifier = Modifier
                             .width(130.dp)
@@ -149,18 +151,24 @@ fun PaymentConfirmationScreen(
                     Column(
                         modifier = Modifier.weight(1f)
                     ) {
+
+                        // doctor name
                         Text(
                             text = doctor?.name ?: "",
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Font(R.font.raleway_bold)),
                             color = Black
                         )
+
+                        // clinic name
                         Text(
                             text = doctor?.clinic ?: "",
                             fontSize = 12.sp,
                             fontFamily = FontFamily(Font(R.font.raleway_medium)),
                             color = Black
                         )
+
+                        // payment status
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(containerColor = Accent),
@@ -183,7 +191,7 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ✅ Payment Details
+            // payment details
             Text(
                 text = "Rincian Pembayaran",
                 fontSize = 18.sp,
@@ -207,7 +215,7 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ✅ Bank Transfer Details
+            // bank transfer details
             Text(
                 text = "Rekening Pembayaran",
                 fontSize = 18.sp,
@@ -304,7 +312,7 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // ✅ Upload Payment Proof
+            // upload payment proof
             Text(
                 text = "Upload Bukti Pembayaran",
                 fontSize = 18.sp,
@@ -329,7 +337,6 @@ fun PaymentConfirmationScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    // Text diubah: jika loading tampilkan "Uploading...", jika sudah selesai pakai URL/filename
                     Text(
                         text = when {
                             isLoading -> "Uploading..."
@@ -365,7 +372,7 @@ fun PaymentConfirmationScreen(
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // ✅ Confirm Button Section
+        // confirm button
         Column(
             modifier = Modifier
                 .fillMaxWidth()
