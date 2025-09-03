@@ -12,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.nurtura.ui.common.BottomNavBar
 import com.example.nurtura.ui.mydoc.MyDocScreen
 import com.example.nurtura.ui.profile.ProfileScreen
+import com.example.nurtura.ui.trimester.TrimesterScreen
 
 @Composable
 fun MainScreen(modifier: Modifier = Modifier) {
@@ -32,13 +33,20 @@ fun MainScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("home") {
-                HomeScreen()
+                HomeScreen(navController = navController)
             }
+
             composable("mydoc") {
                 MyDocScreen()
             }
+
             composable("profile") {
                 ProfileScreen()
+            }
+
+            composable("trimester/{trimesterNumber}") { backStackEntry ->
+                val trimesterNumber = backStackEntry.arguments?.getString("trimesterNumber")?.toIntOrNull() ?: 1
+                TrimesterScreen(trimesterNumber = trimesterNumber, navController = navController)
             }
         }
     }

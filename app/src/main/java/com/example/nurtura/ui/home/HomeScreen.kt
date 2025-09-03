@@ -21,7 +21,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.nurtura.R
+import com.example.nurtura.cache.UserData
 import com.example.nurtura.domain.model.Doctor
 import com.example.nurtura.ui.common.AskNurturaCard
 import com.example.nurtura.ui.common.ClickableSearchBar
@@ -31,13 +33,19 @@ import com.example.nurtura.ui.theme.Black
 import com.example.nurtura.ui.theme.White
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
+
     val doctors = listOf(
         Doctor("Loraine Glory, Sp. Og.", "Daqu Clinic, Malang", 4.5f, 150),
         Doctor("Drake Scholz, Sp. Og.", "Daqu Clinic, Malang", 4.7f, 200),
         Doctor("Gretchen Solis, Sp. Og.", "Daqu Clinic, Malang", 4.3f, 120),
         Doctor("Vivienne Solis, Sp. Og.", "Daqu Clinic, Malang", 4.6f, 180)
     )
+
+    val trimesterNumber = UserData.pregnancyAge
 
     LazyColumn(
         modifier = Modifier
@@ -134,7 +142,10 @@ fun HomeScreen() {
                 AskNurturaCard(onAskNurturaClick = {})
 
                 // trimester
-                TrimesterCard(currentTrimester = 2, onReadMoreClick = {})
+                TrimesterCard(
+                    currentTrimester = trimesterNumber,
+                    onReadMoreClick = { navController.navigate("trimester/$trimesterNumber") }
+                )
 
                 // another content
                 Row(
