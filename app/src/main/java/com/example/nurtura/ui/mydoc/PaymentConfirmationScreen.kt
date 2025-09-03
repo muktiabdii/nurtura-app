@@ -1,9 +1,12 @@
 package com.example.nurtura.ui.mydoc
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,10 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,19 +33,32 @@ import com.example.nurtura.R
 import com.example.nurtura.cache.doctorList
 import com.example.nurtura.ui.common.PaymentRow
 import com.example.nurtura.ui.theme.*
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PaymentConfirmationScreen(
     id: Int,
-    navController: NavController
+    navController: NavController,
+    viewModel: MyDocViewModel // ✅ ViewModel dikirim dari Main Screen
 ) {
-    var uploadedFileName by remember { mutableStateOf<String?>(null) }
-    val doctor = doctorList.find { it.id == id }
     val clipboardManager = LocalClipboardManager.current
     val textToCopy = "0110 2222 1111 000"
+    val context = LocalContext.current
+
+    var localFileName by remember { mutableStateOf<String?>(null) }
+    val uploadedFileUrl by viewModel.imageUrl.collectAsState()
+    val isLoading by viewModel.loading.collectAsState()
+
+    val doctor = doctorList.find { it.id == id }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            localFileName = it.lastPathSegment
+            viewModel.uploadImage(it)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -48,7 +66,7 @@ fun PaymentConfirmationScreen(
             .background(White)
             .verticalScroll(rememberScrollState())
     ) {
-        // Top Bar
+        // ✅ Top Bar
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -80,27 +98,20 @@ fun PaymentConfirmationScreen(
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Pesan Doktor",
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                        lineHeight = 20.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Text(
+                    text = "Pesan Doktor",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                    lineHeight = 20.sp,
+                    textAlign = TextAlign.Center
+                )
 
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
 
-        // Scrollable Content
+        // ✅ Scrollable Content
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,68 +119,63 @@ fun PaymentConfirmationScreen(
         ) {
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Doctor Info Card
+            // ✅ Doctor Info Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White
-                ),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    // Doctor Image
+                    Box(
+                        modifier = Modifier
+                            .width(130.dp)
+                            .height(100.dp)
+                            .clip(RoundedCornerShape(8.dp))
                     ) {
-                        // Doctor Image
-                        Box(
-                            modifier = Modifier
-                                .width(130.dp)
-                                .height(100.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                        ) {
-                            Image(
-                                painter = painterResource(id = doctor?.image ?: 0),
-                                contentDescription = "Doctor Photo",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = doctor?.image ?: 0),
+                            contentDescription = "Doctor Photo",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
 
-                        Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
 
-                        Column(
-                            modifier = Modifier.weight(1f)
+                    Column(
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            text = doctor?.name ?: "",
+                            fontSize = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                            color = Black
+                        )
+                        Text(
+                            text = doctor?.clinic ?: "",
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.raleway_medium)),
+                            color = Black
+                        )
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = Accent),
+                            shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = doctor?.name ?: "",
-                                fontSize = 16.sp,
+                                text = "Proses Pembayaran",
                                 fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                                color = Black
+                                color = White,
+                                fontSize = 11.sp,
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .fillMaxWidth(),
+                                textAlign = TextAlign.Center
                             )
-                            Text(
-                                text = doctor?.clinic ?: "",
-                                fontSize = 12.sp,
-                                fontFamily = FontFamily(Font(R.font.raleway_medium)),
-                                color = Black
-                            )
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Accent
-                                ),
-                                shape = RoundedCornerShape(8.dp)
-                            ) {
-                                Text(
-                                    text = "Proses Pembayaran",
-                                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                                    color = White,
-                                    fontSize = 11.sp,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .fillMaxWidth(),
-                                    textAlign = TextAlign.Center
-                                )
-                            }
                         }
                     }
                 }
@@ -177,7 +183,7 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Payment Details
+            // ✅ Payment Details
             Text(
                 text = "Rincian Pembayaran",
                 fontSize = 18.sp,
@@ -187,17 +193,12 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Payment Summary Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = Alt1
-                ),
+                colors = CardDefaults.cardColors(containerColor = Alt1),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     PaymentRow("Subtotal", "Rp. 350.000")
                     PaymentRow("Diskon", "Rp. 0")
                     PaymentRow("Total", "Rp. 350.000", isTotal = true)
@@ -206,7 +207,7 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Bank Transfer Details
+            // ✅ Bank Transfer Details
             Text(
                 text = "Rekening Pembayaran",
                 fontSize = 18.sp,
@@ -225,20 +226,13 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Bank Account Card
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Card(
                     modifier = Modifier
                         .width(60.dp)
                         .height(40.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Light
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 2.dp
-                    ),
+                    colors = CardDefaults.cardColors(containerColor = Light),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Image(
@@ -265,17 +259,12 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Account Number Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Alt1
-                ),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 2.dp
-                ),
+                colors = CardDefaults.cardColors(containerColor = Alt1),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -286,14 +275,17 @@ fun PaymentConfirmationScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "0110 2222 1111 000",
+                        text = textToCopy,
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.raleway_bold)),
                         color = Accent
                     )
 
                     Button(
-                        onClick = { clipboardManager.setText(AnnotatedString(textToCopy)) },
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(textToCopy))
+                            Toast.makeText(context, "Nomor rekening disalin", Toast.LENGTH_SHORT).show()
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = White,
                             contentColor = Primary
@@ -312,7 +304,7 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Upload Payment Proof
+            // ✅ Upload Payment Proof
             Text(
                 text = "Upload Bukti Pembayaran",
                 fontSize = 18.sp,
@@ -322,15 +314,12 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Upload Area
             Card(
-                onClick = { /* Handle click */ },
+                onClick = { launcher.launch("image/*") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Alt1
-                ),
+                colors = CardDefaults.cardColors(containerColor = Alt1),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
@@ -340,35 +329,48 @@ fun PaymentConfirmationScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+                    // Text diubah: jika loading tampilkan "Uploading...", jika sudah selesai pakai URL/filename
                     Text(
-                        text = uploadedFileName ?: "Silahkan upload bukti pembayaran (file berupa jpg)",
+                        text = when {
+                            isLoading -> "Uploading..."
+                            uploadedFileUrl != null -> localFileName ?: "File berhasil diupload"
+                            else -> "Silahkan upload bukti pembayaran (file berupa jpg)"
+                        },
                         fontSize = 10.sp,
-                        color = if (uploadedFileName != null) Black else Alt2,
+                        color = if (uploadedFileUrl != null) Black else Alt2,
                         modifier = Modifier.weight(1f)
                     )
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_upload),
-                        contentDescription = "Upload",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(4.dp)),
-                        contentScale = ContentScale.Fit
-                    )
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp,
+                            color = Primary
+                        )
+                    } else {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_upload),
+                            contentDescription = "Upload",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(4.dp)),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // Info Text and Confirm Payment Card (Full-screen background)
+        // ✅ Confirm Button Section
         Column(
             modifier = Modifier
-                .fillMaxWidth() // Fill entire width
+                .fillMaxWidth()
                 .background(Alt1)
-                .padding(16.dp), // Background spans full width
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -379,18 +381,14 @@ fun PaymentConfirmationScreen(
                 color = Accent,
                 textAlign = TextAlign.Start,
                 lineHeight = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
 
-            // Confirm Payment Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { /* Handle click */ },
-                colors = CardDefaults.cardColors(
-                    containerColor = Grey
-                ),
+                    .clickable {  },
+                colors = CardDefaults.cardColors(if (uploadedFileUrl != null) Alt2 else Grey),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
