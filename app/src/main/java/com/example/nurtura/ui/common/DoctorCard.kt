@@ -58,7 +58,8 @@ fun DoctorCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Doctor Image
+
+            // doctor image
             Box(
                 modifier = Modifier
                     .size(60.dp)
@@ -76,7 +77,7 @@ fun DoctorCard(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Doctor Name
+            // doctor name
             Text(
                 text = doctorName,
                 fontSize = 14.sp,
@@ -88,7 +89,7 @@ fun DoctorCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Clinic Name
+            // clinic name
             Text(
                 text = clinic,
                 fontSize = 12.sp,
@@ -100,13 +101,12 @@ fun DoctorCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Rating and Patient Count Row
+            // rating and patient count
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Rating Section
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -125,7 +125,6 @@ fun DoctorCard(
                     )
                 }
 
-                // Patient Count Section
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -159,7 +158,7 @@ fun DoctorCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Book Button
+            // book button
             Button(
                 onClick = onBookClick,
                 modifier = Modifier.fillMaxWidth(),

@@ -51,7 +51,6 @@ fun ScheduleCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Hari
             Text(
                 text = hari,
                 color = if (available) Black else Grey,
@@ -60,7 +59,6 @@ fun ScheduleCard(
                 textAlign = TextAlign.Center
             )
 
-            // Tanggal
             Text(
                 text = tanggal,
                 color = if (available) Black else Grey,
@@ -69,7 +67,6 @@ fun ScheduleCard(
                 textAlign = TextAlign.Center
             )
 
-            // Jam
             Text(
                 text = jam,
                 color = if (available) Black else Grey,
@@ -78,30 +75,5 @@ fun ScheduleCard(
                 textAlign = TextAlign.Center
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ScheduleCardPreview() {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.padding(16.dp)
-    ) {
-        // Available card (blue)
-        ScheduleCard(
-            hari = "Rab",
-            tanggal = "4",
-            jam = "13:00",
-            available = true
-        )
-
-        // Unavailable card (gray)
-        ScheduleCard(
-            hari = "Kam",
-            tanggal = "5",
-            jam = "13:00",
-            available = false
-        )
     }
 }

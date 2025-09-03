@@ -50,7 +50,8 @@ fun DoctorDetailScreen(
             .fillMaxSize()
             .background(White),
     ) {
-        // Header
+
+        // header
         item {
             Box(
                 modifier = Modifier
@@ -103,12 +104,12 @@ fun DoctorDetailScreen(
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        // Doctor Image
+        // doctor image
         item {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth() // Pastikan Box mengisi lebar layar
-                    .wrapContentWidth(Alignment.CenterHorizontally) // Pusatkan Box secara horizontal
+                    .fillMaxWidth()
+                    .wrapContentWidth(Alignment.CenterHorizontally)
                     .padding(horizontal = 16.dp)
                     .width(160.dp)
                     .height(130.dp)
@@ -126,7 +127,7 @@ fun DoctorDetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Doctor Name & Clinic
+        // doctor name & clinic
         item {
             Text(
                 text = doctor?.name ?: "",
@@ -152,7 +153,7 @@ fun DoctorDetailScreen(
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // Doctor Stats
+        // doctor stats
         item {
             DoctorStatsCard(
                 modifier = Modifier
@@ -166,7 +167,7 @@ fun DoctorDetailScreen(
             Spacer(modifier = Modifier.height(32.dp))
         }
 
-        // Schedule Title
+        // schedule
         item {
             Text(
                 text = "Informasi Jadwal Praktek Tersedia",
@@ -181,7 +182,6 @@ fun DoctorDetailScreen(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Jadwal Grid (gunakan LazyVerticalGrid dengan tinggi fix)
         item {
             FlowRow(
                 modifier = Modifier
@@ -204,7 +204,7 @@ fun DoctorDetailScreen(
             Spacer(modifier = Modifier.height(40.dp))
         }
 
-        // Button
+        // button
         item {
             Button(
                 onClick = { },

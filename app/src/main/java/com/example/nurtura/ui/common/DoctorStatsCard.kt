@@ -48,7 +48,8 @@ fun DoctorStatsCard(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Pasien Section
+
+            // patient count
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f)
@@ -73,7 +74,7 @@ fun DoctorStatsCard(
             DividerVertical()
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Top Rating Section
+            // top rating
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f)
@@ -110,7 +111,7 @@ fun DoctorStatsCard(
             DividerVertical()
             Spacer(modifier = Modifier.width(12.dp))
 
-            // Experience Years Section
+            // experience years
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f)
@@ -134,12 +135,3 @@ fun DoctorStatsCard(
     }
 }
 
-@Composable
-fun DividerVertical() {
-    Box(
-        modifier = Modifier
-            .height(40.dp)
-            .width(1.dp)
-            .background(Black)
-    )
-}
