@@ -38,7 +38,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("mydoc") {
-                MyDocScreen()
+                MyDocScreen(navController = navController)
             }
 
             composable("profile") {
