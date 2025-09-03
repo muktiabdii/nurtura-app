@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nurtura.ui.common.BottomNavBar
+import com.example.nurtura.ui.mydoc.DoctorDetailScreen
 import com.example.nurtura.ui.mydoc.MyDocScreen
 import com.example.nurtura.ui.myemotalk.FoodDetailScreen
 import com.example.nurtura.ui.myemotalk.FoodRecsScreen
@@ -57,6 +58,11 @@ fun MainScreen(modifier: Modifier = Modifier) {
             composable("food-detail/{foodId}") {
                 val foodId = it.arguments?.getString("foodId")?: ""
                 FoodDetailScreen(id = foodId, navController = navController)
+            }
+
+            composable("doctor-detail/{doctorId}") {
+                val doctorId = it.arguments?.getString("doctorId")?.toIntOrNull() ?: 1
+                DoctorDetailScreen(id = doctorId, navController = navController)
             }
         }
     }

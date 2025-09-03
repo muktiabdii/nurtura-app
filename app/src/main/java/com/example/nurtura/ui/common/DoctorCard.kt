@@ -1,6 +1,7 @@
 package com.example.nurtura.ui.common
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -36,22 +37,26 @@ import com.example.nurtura.ui.theme.White
 fun DoctorCard(
     modifier: Modifier = Modifier,
     doctorName: String,
+    doctorImage: Int,
     clinic: String,
     rating: Float,
     patientCount: Int,
-    doctorImageUrl: String? = null,
     onBookClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(260.dp),
         colors = CardDefaults.cardColors(containerColor = White),
         border = BorderStroke(4.dp, Primary),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Doctor Image
             Box(
@@ -61,21 +66,12 @@ fun DoctorCard(
                     .background(Light),
                 contentAlignment = Alignment.Center
             ) {
-                if (doctorImageUrl != null) {
-                    AsyncImage(
-                        model = doctorImageUrl,
-                        contentDescription = "Doctor Photo",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_user),
-                        contentDescription = "Default Doctor Icon",
-                        modifier = Modifier.size(30.dp),
-                        tint = Primary
-                    )
-                }
+                Image(
+                    painter = painterResource(id = doctorImage),
+                    contentDescription = "Doctor Photo",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -98,7 +94,8 @@ fun DoctorCard(
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(R.font.raleway_regular)),
                 color = Black,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                lineHeight = 16.sp
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -183,18 +180,4 @@ fun DoctorCard(
             }
         }
     }
-}
-
-@Preview
-@Composable
-private fun asdf() {
-    DoctorCard(
-        doctorName = "Loraine Glory, Sp. Og.",
-        clinic = "Daqu Clinic, Malang",
-        rating = 4.5f,
-        patientCount = 150,
-        onBookClick = {
-            // Handle booking action
-        }
-    )
 }

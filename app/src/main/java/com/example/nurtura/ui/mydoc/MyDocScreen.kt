@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.nurtura.R
 import com.example.nurtura.cache.UserData
+import com.example.nurtura.cache.doctorList
 import com.example.nurtura.domain.model.Doctor
 import com.example.nurtura.ui.common.AskNurturaCard
 import com.example.nurtura.ui.common.ClickableSearchBar
@@ -44,14 +45,7 @@ fun MyDocScreen(
     navController: NavController
 ) {
 
-    val doctors = listOf(
-        Doctor("Loraine Glory, Sp. Og.", "Daqu Clinic, Malang", 4.5f, 150),
-        Doctor("Drake Scholz, Sp. Og.", "Daqu Clinic, Malang", 4.7f, 200),
-        Doctor("Gretchen Solis, Sp. Og.", "Daqu Clinic, Malang", 4.3f, 120),
-        Doctor("Vivienne Solis, Sp. Og.", "Daqu Clinic, Malang", 4.6f, 180),
-        Doctor("Loraine Glory, Sp. Og.", "Daqu Clinic, Malang", 4.5f, 150),
-        Doctor("Drake Scholz, Sp. Og.", "Daqu Clinic, Malang", 4.7f, 200),
-    )
+    val doctors = doctorList
 
     LazyColumn(
         modifier = Modifier
@@ -169,10 +163,11 @@ fun MyDocScreen(
                     Box(modifier = Modifier.weight(1f)) {
                         DoctorCard(
                             doctorName = doctor.name,
+                            doctorImage = doctor.image,
                             clinic = doctor.clinic,
                             rating = doctor.rating,
                             patientCount = doctor.patientCount,
-                            onBookClick = {}
+                            onBookClick = { navController.navigate("doctor-detail/${doctor.id}") }
                         )
                     }
                 }
