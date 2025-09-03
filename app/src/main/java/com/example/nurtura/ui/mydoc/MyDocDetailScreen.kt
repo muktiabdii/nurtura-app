@@ -207,7 +207,7 @@ fun DoctorDetailScreen(
         // button
         item {
             Button(
-                onClick = { },
+                onClick = { navController.navigate("payment-confirmation/${doctor?.id}") },
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth()

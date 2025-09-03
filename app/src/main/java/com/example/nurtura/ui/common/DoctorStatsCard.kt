@@ -135,3 +135,12 @@ fun DoctorStatsCard(
     }
 }
 
+@Composable
+fun DividerVertical() {
+    Box(
+        modifier = Modifier
+            .height(40.dp)
+            .width(1.dp)
+            .background(Black)
+    )
+}

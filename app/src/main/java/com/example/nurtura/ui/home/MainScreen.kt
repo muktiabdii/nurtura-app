@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.nurtura.ui.common.BottomNavBar
 import com.example.nurtura.ui.mydoc.DoctorDetailScreen
 import com.example.nurtura.ui.mydoc.MyDocScreen
+import com.example.nurtura.ui.mydoc.PaymentConfirmationScreen
 import com.example.nurtura.ui.myemotalk.FoodDetailScreen
 import com.example.nurtura.ui.myemotalk.FoodRecsScreen
 import com.example.nurtura.ui.profile.ProfileScreen
@@ -63,6 +64,11 @@ fun MainScreen(modifier: Modifier = Modifier) {
             composable("doctor-detail/{doctorId}") {
                 val doctorId = it.arguments?.getString("doctorId")?.toIntOrNull() ?: 1
                 DoctorDetailScreen(id = doctorId, navController = navController)
+            }
+
+            composable("payment-confirmation/{doctorId}") {
+                val doctorId = it.arguments?.getString("doctorId")?.toIntOrNull() ?: 1
+                PaymentConfirmationScreen(id = doctorId, navController = navController)
             }
         }
     }
