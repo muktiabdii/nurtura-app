@@ -12,8 +12,8 @@ class UserUseCase(private val userRepository: UserRepository) {
     }
 
     // function untuk mendapatkan user dari cache
-    suspend fun saveUserToCache(uid: String, name: String, email: String) {
-        userRepository.saveUserToCache(uid, name, email)
+    suspend fun saveUserToCache(uid: String, name: String, email: String, pregnancyAge: Int, healthNotes: String, location: String) {
+        userRepository.saveUserToCache(uid, name, email, pregnancyAge, healthNotes, location)
     }
 
     // function untuk mendapatkan user uid dari cache

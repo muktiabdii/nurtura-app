@@ -31,7 +31,7 @@ class AuthUseCase(private val authRepository: AuthRepository) {
         email: String,
         password: String,
         passwordConfirmation: String,
-        pregnancyAge: String,
+        pregnancyAge: Int,
         healthNotes: String,
         location: String,
         onResult: (Boolean, String?) -> Unit
@@ -41,7 +41,7 @@ class AuthUseCase(private val authRepository: AuthRepository) {
             email.trim(),
             password.trim(),
             passwordConfirmation.trim(),
-            pregnancyAge.trim(),
+            pregnancyAge,
             healthNotes.trim(),
             location.trim(),
             onResult

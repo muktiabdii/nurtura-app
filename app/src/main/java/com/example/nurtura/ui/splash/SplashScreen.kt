@@ -61,8 +61,6 @@ fun SplashScreen(
 
         delay(2000)
 
-        Log.d("splash", "isOnBoardingShown: $isOnBoardingShown")
-
         // kalau onboarding belum ditampilkan
         if (!isOnBoardingShown) {
             navController.navigate("onboarding") {

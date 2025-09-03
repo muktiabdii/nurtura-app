@@ -3,6 +3,7 @@ package com.example.nurtura.data.datastore
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -17,15 +18,21 @@ class PreferencesManager(private val context: Context) {
         private val KEY_UID = stringPreferencesKey("uid")
         private val KEY_NAME = stringPreferencesKey("name")
         private val KEY_EMAIL = stringPreferencesKey("email")
+        private val KEY_PREGNANCY_AGE = intPreferencesKey("pregnancy_age")
+        private val KEY_HEALTH_NOTES = stringPreferencesKey("health_notes")
+        private val KEY_LOCATION = stringPreferencesKey("location")
         private val KEY_ONBOARDING_SHOWN = booleanPreferencesKey("is_onboarding_shown")
     }
 
     // save user info
-    suspend fun saveUser(uid: String, name: String, email: String) {
+    suspend fun saveUser(uid: String, name: String, email: String, pregnancyAge: Int, healthNotes: String, location: String) {
         context.dataStore.edit { preferences ->
             preferences[KEY_UID] = uid
             preferences[KEY_NAME] = name
             preferences[KEY_EMAIL] = email
+            preferences[KEY_PREGNANCY_AGE] = pregnancyAge
+            preferences[KEY_HEALTH_NOTES] = healthNotes
+            preferences[KEY_LOCATION] = location
         }
     }
 
@@ -35,6 +42,9 @@ class PreferencesManager(private val context: Context) {
             preferences.remove(KEY_UID)
             preferences.remove(KEY_NAME)
             preferences.remove(KEY_EMAIL)
+            preferences.remove(KEY_PREGNANCY_AGE)
+            preferences.remove(KEY_HEALTH_NOTES)
+            preferences.remove(KEY_LOCATION)
         }
     }
 

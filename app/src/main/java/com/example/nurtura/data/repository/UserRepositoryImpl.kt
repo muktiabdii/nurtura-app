@@ -20,9 +20,9 @@ class UserRepositoryImpl(private val preferencesManager: PreferencesManager) : U
     }
 
     // function untuk mendapatkan user dari cache
-    override suspend fun saveUserToCache(uid: String, name: String, email: String) {
-        preferencesManager.saveUser(uid, name, email)
-        UserData.set(uid, name, email)
+    override suspend fun saveUserToCache(uid: String, name: String, email: String, pregnancyAge: Int, healthNotes: String, location: String) {
+        preferencesManager.saveUser(uid, name, email, pregnancyAge, healthNotes, location)
+        UserData.set(uid, name, email, pregnancyAge, healthNotes, location)
     }
 
     // function untuk mendapatkan user uid dari cache
@@ -49,10 +49,10 @@ class UserRepositoryImpl(private val preferencesManager: PreferencesManager) : U
             database.child("users").child(uid).updateChildren(userUpdates).await()
 
             // update di datastore
-            preferencesManager.saveUser(uid, name, email)
+            preferencesManager.saveUser(uid, name, email, 0, "", "")
 
             // update di cache
-            UserData.set(uid, name, email)
+            UserData.set(uid, name, email, 0, "", "")
             return true
         }
 

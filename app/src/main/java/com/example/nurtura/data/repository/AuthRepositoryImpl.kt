@@ -33,7 +33,7 @@ class AuthRepositoryImpl: AuthRepository {
         email: String,
         password: String,
         passwordConfirmation: String,
-        pregnancyAge: String,
+        pregnancyAge: Int,
         healthNotes: String,
         location: String,
         onResult: (Boolean, String?) -> Unit

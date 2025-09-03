@@ -24,7 +24,7 @@ data class RegisterUiState(
     val email: String = "",
     val password: String = "",
     val passwordConfirmation: String = "",
-    val pregnancyAge: String = "",
+    val pregnancyAge: Int = 0,
     val healthNotes: String = "",
     val location: String = "",
     val state: State = State.Idle
@@ -63,7 +63,7 @@ class AuthViewModel(
         _registerUiState.value = _registerUiState.value.copy(passwordConfirmation = passwordConfirmation)
     }
 
-    fun updatePregnancyAge(pregnancyAge: String) {
+    fun updatePregnancyAge(pregnancyAge: Int) {
         _registerUiState.value = _registerUiState.value.copy(pregnancyAge = pregnancyAge)
     }
 
@@ -130,7 +130,7 @@ class AuthViewModel(
     suspend fun loadUser(uid: String) {
         val user = userUseCase.getUserFromRemote(uid)
         if (user != null) {
-            userUseCase.saveUserToCache(user.uid, user.name, user.email)
+            userUseCase.saveUserToCache(user.uid, user.name, user.email, user.pregnancyAge, user.healthNotes, user.location)
         }
     }
 

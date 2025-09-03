@@ -151,9 +151,9 @@ fun RegisterAdditionalInfoScreen(
                                 )
                             )
                             InputFormField(
-                                value = registerState.pregnancyAge,
-                                onValueChange = { viewModel.updatePregnancyAge(it) },
-                                placeholder = "contoh : Trimester 2"
+                                value = registerState.pregnancyAge.toString(),
+                                onValueChange = { viewModel.updatePregnancyAge(it.toIntOrNull() ?: 0) },
+                                placeholder = "contoh : 2"
                             )
                         }
 
