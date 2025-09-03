@@ -45,7 +45,8 @@ fun TrimesterScreen(
             .background(White)
     ) {
         item {
-            // ✅ Header Section
+
+            // header
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -87,7 +88,7 @@ fun TrimesterScreen(
                 }
             }
 
-            // ✅ Main Card
+            // main card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -164,7 +165,7 @@ fun TrimesterScreen(
                 }
             }
 
-            // ✅ Development Section
+            // development section
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -218,7 +219,7 @@ fun TrimesterScreen(
                 }
             }
 
-            // ✅ Tips Section
+            // tips section
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
