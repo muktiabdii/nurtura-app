@@ -46,7 +46,7 @@ fun SearchBar(
             Text(
                 text = placeholder,
                 color = Black,
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 fontFamily = FontFamily(Font(R.font.raleway_medium))
             )
         },

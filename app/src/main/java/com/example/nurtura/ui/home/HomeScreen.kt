@@ -136,7 +136,7 @@ fun HomeScreen(
             ) {
 
                 // search bar
-                ClickableSearchBar(onClick = {})
+                ClickableSearchBar(onClick = { navController.navigate("food-recs") })
 
                 // nurtura card
                 AskNurturaCard(onAskNurturaClick = {})
