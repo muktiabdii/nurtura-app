@@ -12,7 +12,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nurtura.data.remote.api.CloudinaryService
 import com.example.nurtura.data.repository.CloudinaryRepositoryImpl
+import com.example.nurtura.data.repository.MyEmoTalkRepositoryImpl
 import com.example.nurtura.domain.usecase.CloudinaryUseCase
+import com.example.nurtura.domain.usecase.MyEmoTalkUseCase
 import com.example.nurtura.ui.common.BottomNavBar
 import com.example.nurtura.ui.mydoc.DoctorDetailScreen
 import com.example.nurtura.ui.mydoc.MyDocScreen
@@ -20,6 +22,7 @@ import com.example.nurtura.ui.mydoc.MyDocViewModel
 import com.example.nurtura.ui.mydoc.PaymentConfirmationScreen
 import com.example.nurtura.ui.myemotalk.FoodDetailScreen
 import com.example.nurtura.ui.myemotalk.FoodRecsScreen
+import com.example.nurtura.ui.myemotalk.MyEmoTalkViewModel
 import com.example.nurtura.ui.myemotalk.RecordScreen
 import com.example.nurtura.ui.profile.ProfileScreen
 import com.example.nurtura.ui.trimester.TrimesterScreen
@@ -34,6 +37,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val cloudinaryRepo = CloudinaryRepositoryImpl(service = CloudinaryService.instance, context = LocalContext.current)
     val cloudinaryUseCase = CloudinaryUseCase(cloudinaryRepo)
     val cloudinaryViewModel: MyDocViewModel = viewModel(factory = MyDocViewModel.Factory(cloudinaryUseCase))
+
+    val myEmoTalkRepo = MyEmoTalkRepositoryImpl()
+    val myEmoTalkUseCase = MyEmoTalkUseCase(myEmoTalkRepo)
+    val myEmoTalkViewModel: MyEmoTalkViewModel = viewModel(factory = MyEmoTalkViewModel.Factory(myEmoTalkUseCase))
 
     Scaffold(
         bottomBar = {
@@ -84,7 +91,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("record") {
-                RecordScreen(isRecording = true)
+                RecordScreen(viewModel = myEmoTalkViewModel, navController = navController)
             }
         }
     }

@@ -2,6 +2,9 @@
 
 package com.example.nurtura.ui.myemotalk
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -20,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -27,6 +31,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import kotlin.math.sin
 import kotlin.random.Random
 import com.example.nurtura.R
@@ -36,9 +41,31 @@ import com.example.nurtura.ui.theme.White
 
 @Composable
 fun RecordScreen(
-    isRecording: Boolean = false,
-    onRecordingToggle: () -> Unit = {}
+    viewModel: MyEmoTalkViewModel,
+    navController: NavController
 ) {
+
+    val context = LocalContext.current
+    val isRecording by viewModel.isRecording.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            viewModel.startRecording(context) 
+        }
+
+        else {
+            Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show()
+            navController.popBackStack()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        launcher.launch(android.Manifest.permission.RECORD_AUDIO)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -132,17 +159,25 @@ fun RecordScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             IconButton(
-                onClick = {},
+                onClick = { if (!isLoading) viewModel.stopRecordingAndSend() },
                 modifier = Modifier.size(65.dp),
-                content = {
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        color = Accent,
+                        strokeWidth = 4.dp,
+                        modifier = Modifier.size(40.dp)
+                    )
+                } else {
                     Image(
                         painter = painterResource(id = R.drawable.ic_stop),
-                        contentDescription = "back",
+                        contentDescription = "Stop Recording",
                         modifier = Modifier.size(54.dp),
                         contentScale = ContentScale.FillBounds
                     )
                 }
-            )
+            }
         }
     }
 }
