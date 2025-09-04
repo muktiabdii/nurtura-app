@@ -1,5 +1,8 @@
 package com.example.nurtura.ui.mydoc
 
+import android.R.attr.enabled
+import android.R.attr.onClick
+import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -33,6 +36,7 @@ import com.example.nurtura.R
 import com.example.nurtura.cache.doctorList
 import com.example.nurtura.ui.common.PaymentRow
 import com.example.nurtura.ui.theme.*
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +54,8 @@ fun PaymentConfirmationScreen(
     val isLoading by viewModel.loading.collectAsState()
 
     val doctor = doctorList.find { it.id == id }
+
+    var isConfirmed by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -171,11 +177,11 @@ fun PaymentConfirmationScreen(
                         // payment status
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = Accent),
+                            colors = CardDefaults.cardColors(containerColor = if (isConfirmed) Color(0xFF4CAF50) else Accent),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = "Proses Pembayaran",
+                                text = if (isConfirmed) "Pembayaran Berhasil" else "Proses Pembayaran",
                                 fontFamily = FontFamily(Font(R.font.raleway_bold)),
                                 color = White,
                                 fontSize = 11.sp,
@@ -191,185 +197,239 @@ fun PaymentConfirmationScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // payment details
-            Text(
-                text = "Rincian Pembayaran",
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
-                color = Black
-            )
+            if (isConfirmed) {
+                Text(
+                    text = "Yay! Proses pembayaran berhasil, silahkan lakukan konsultasi dengan Dokter pilihan Bunda",
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                    color = Black,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 16.sp
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(25.dp))
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = Alt1),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    PaymentRow("Subtotal", "Rp. 350.000")
-                    PaymentRow("Diskon", "Rp. 0")
-                    PaymentRow("Total", "Rp. 350.000", isTotal = true)
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.image_mydoc),
+                        contentDescription = "Payment Success",
+                        modifier = Modifier.size(250.dp),
+                        contentScale = ContentScale.FillBounds,
+                    )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(25.dp))
 
-            // bank transfer details
-            Text(
-                text = "Rekening Pembayaran",
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
-                color = Black
-            )
-
-            Text(
-                text = "Silahkan lakukan pembayaran melalui nomor rekening berikut",
-                fontSize = 12.sp,
-                fontFamily = FontFamily(Font(R.font.raleway_regular)),
-                color = Alt2,
-                lineHeight = 16.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
                 Card(
                     modifier = Modifier
-                        .width(60.dp)
-                        .height(40.dp),
-                    colors = CardDefaults.cardColors(containerColor = Light),
+                        .fillMaxWidth()
+                        .clickable {
+                            val url = "https://wa.me/${doctor?.number}"
+                            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+                            context.startActivity(intent)
+                        },
+                    colors = CardDefaults.cardColors(containerColor = Alt2),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "Mulai Konsultasi Dengan Dokter",
+                        color = White,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                        modifier = Modifier
+                            .padding(vertical = 12.dp)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(25.dp))
+            }
+
+            else {
+                // payment details
+                Text(
+                    text = "Rincian Pembayaran",
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                    color = Black
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Alt1),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        PaymentRow("Subtotal", "Rp. 350.000")
+                        PaymentRow("Diskon", "Rp. 0")
+                        PaymentRow("Total", "Rp. 350.000", isTotal = true)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // bank transfer details
+                Text(
+                    text = "Rekening Pembayaran",
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                    color = Black
+                )
+
+                Text(
+                    text = "Silahkan lakukan pembayaran melalui nomor rekening berikut",
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_regular)),
+                    color = Alt2,
+                    lineHeight = 16.sp,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Card(
+                        modifier = Modifier
+                            .width(60.dp)
+                            .height(40.dp),
+                        colors = CardDefaults.cardColors(containerColor = Light),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.bri),
+                            contentDescription = "BRI Logo",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    Column {
+                        Text(
+                            text = "Bank BRI \nNURTURA FROM CARE TO NURTURE",
+                            fontSize = 12.sp,
+                            fontFamily = FontFamily(Font(R.font.raleway_medium)),
+                            color = Black,
+                            lineHeight = 16.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+                    colors = CardDefaults.cardColors(containerColor = Alt1),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bri),
-                        contentDescription = "BRI Logo",
+                    Row(
                         modifier = Modifier
-                            .size(40.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Column {
-                    Text(
-                        text = "Bank BRI \nNURTURA FROM CARE TO NURTURE",
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily(Font(R.font.raleway_medium)),
-                        color = Black,
-                        lineHeight = 16.sp
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp),
-                colors = CardDefaults.cardColors(containerColor = Alt1),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = textToCopy,
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                        color = Accent
-                    )
-
-                    Button(
-                        onClick = {
-                            clipboardManager.setText(AnnotatedString(textToCopy))
-                            Toast.makeText(context, "Nomor rekening disalin", Toast.LENGTH_SHORT).show()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = White,
-                            contentColor = Primary
-                        ),
-                        shape = RoundedCornerShape(20.dp),
-                        border = BorderStroke(1.dp, Accent)
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "copy",
-                            fontSize = 12.sp,
+                            text = textToCopy,
+                            fontSize = 18.sp,
                             fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                            color = Accent
                         )
+
+                        Button(
+                            onClick = {
+                                clipboardManager.setText(AnnotatedString(textToCopy))
+                                Toast.makeText(context, "Nomor rekening disalin", Toast.LENGTH_SHORT).show()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = White,
+                                contentColor = Primary
+                            ),
+                            shape = RoundedCornerShape(20.dp),
+                            border = BorderStroke(1.dp, Accent)
+                        ) {
+                            Text(
+                                text = "copy",
+                                fontSize = 12.sp,
+                                fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            // upload payment proof
-            Text(
-                text = "Upload Bukti Pembayaran",
-                fontSize = 18.sp,
-                fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
-                color = Black
-            )
+                // upload payment proof
+                Text(
+                    text = "Upload Bukti Pembayaran",
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                    color = Black
+                )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-            Card(
-                onClick = { launcher.launch("image/*") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp),
-                colors = CardDefaults.cardColors(containerColor = Alt1),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
+                Card(
+                    onClick = { launcher.launch("image/*") },
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
+                        .height(55.dp),
+                    colors = CardDefaults.cardColors(containerColor = Alt1),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(
-                        text = when {
-                            isLoading -> "Uploading..."
-                            uploadedFileUrl != null -> localFileName ?: "File berhasil diupload"
-                            else -> "Silahkan upload bukti pembayaran (file berupa jpg)"
-                        },
-                        fontSize = 10.sp,
-                        color = if (uploadedFileUrl != null) Black else Alt2,
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    if (isLoading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp,
-                            color = Primary
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = when {
+                                isLoading -> "Uploading..."
+                                uploadedFileUrl != null -> localFileName ?: "File berhasil diupload"
+                                else -> "Silahkan upload bukti pembayaran (file berupa jpg)"
+                            },
+                            fontSize = 10.sp,
+                            color = if (uploadedFileUrl != null) Black else Alt2,
+                            modifier = Modifier.weight(1f)
                         )
-                    } else {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_upload),
-                            contentDescription = "Upload",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(4.dp)),
-                            contentScale = ContentScale.Fit
-                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        if (isLoading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp,
+                                color = Primary
+                            )
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_upload),
+                                contentDescription = "Upload",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(4.dp)),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
 
         // confirm button
@@ -394,13 +454,26 @@ fun PaymentConfirmationScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {  },
-                colors = CardDefaults.cardColors(if (uploadedFileUrl != null) Alt2 else Grey),
+                    .clickable(
+                        enabled = uploadedFileUrl != null,
+                        onClick = {
+                            if (!isConfirmed) {
+                                isConfirmed = true
+                            } else {
+                                navController.popBackStack()
+                            }
+                        }
+                    ),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (uploadedFileUrl != null && !isConfirmed) { Alt2 }
+                    else if(isConfirmed) { White }
+                    else { Grey }
+                ),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "Konfirmasi Pembayaran",
-                    color = White,
+                    text = if (isConfirmed) "Kembali" else "Konfirmasi Pembayaran",
+                    color = if (isConfirmed) Alt2 else White,
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
                     modifier = Modifier

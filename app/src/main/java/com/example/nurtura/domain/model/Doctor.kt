@@ -10,6 +10,7 @@ data class Schedule(
 data class Doctor(
     val id: Int,
     val name: String,
+    val number: Long,
     val image: Int,
     val clinic: String,
     val rating: Float,
