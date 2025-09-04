@@ -20,6 +20,7 @@ import com.example.nurtura.ui.mydoc.MyDocViewModel
 import com.example.nurtura.ui.mydoc.PaymentConfirmationScreen
 import com.example.nurtura.ui.myemotalk.FoodDetailScreen
 import com.example.nurtura.ui.myemotalk.FoodRecsScreen
+import com.example.nurtura.ui.myemotalk.RecordScreen
 import com.example.nurtura.ui.profile.ProfileScreen
 import com.example.nurtura.ui.trimester.TrimesterScreen
 
@@ -80,6 +81,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
             composable("payment-confirmation/{doctorId}") {
                 val doctorId = it.arguments?.getString("doctorId")?.toIntOrNull() ?: 1
                 PaymentConfirmationScreen(id = doctorId, navController = navController, viewModel = cloudinaryViewModel)
+            }
+
+            composable("record") {
+                RecordScreen(isRecording = true)
             }
         }
     }

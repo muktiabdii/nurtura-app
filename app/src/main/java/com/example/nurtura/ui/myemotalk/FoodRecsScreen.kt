@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -129,11 +130,34 @@ fun FoodRecsScreen(
 
         // search bar
         item {
-            SearchBar(
-                onSearchClick = { /* Handle search */ },
-                onValueChange = { /* Handle value change */ },
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // back button
+                IconButton(
+                    onClick = { navController.popBackStack()  },
+                    modifier = Modifier.size(54.dp),
+                    content = {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_back_lighter),
+                            contentDescription = "back",
+                            modifier = Modifier.size(54.dp),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
+                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                // search bar
+                Box(modifier = Modifier.weight(1f)) {
+                    SearchBar(placeholder = "Temukan Makanan")
+                }
+            }
         }
 
         item { Spacer(modifier = Modifier.height(24.dp)) }

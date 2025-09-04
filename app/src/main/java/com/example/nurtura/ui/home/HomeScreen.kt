@@ -135,7 +135,7 @@ fun HomeScreen(
                 ClickableSearchBar(onClick = { navController.navigate("food-recs") })
 
                 // nurtura card
-                AskNurturaCard(onAskNurturaClick = {})
+                AskNurturaCard(onAskNurturaClick = { navController.navigate("record") })
 
                 // trimester
                 TrimesterCard(
