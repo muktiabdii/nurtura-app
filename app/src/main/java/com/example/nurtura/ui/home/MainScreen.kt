@@ -27,6 +27,8 @@ import com.example.nurtura.ui.myemotalk.FoodDetailScreen
 import com.example.nurtura.ui.myemotalk.FoodRecsScreen
 import com.example.nurtura.ui.myemotalk.MyEmoTalkViewModel
 import com.example.nurtura.ui.myemotalk.RecordScreen
+import com.example.nurtura.ui.profile.EditAccountScreen
+import com.example.nurtura.ui.profile.EditPersonalDataScreen
 import com.example.nurtura.ui.profile.ProfileScreen
 import com.example.nurtura.ui.trimester.TrimesterScreen
 
@@ -69,7 +71,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("profile") {
-                ProfileScreen()
+                ProfileScreen(navController = navController)
             }
 
             composable("trimester/{trimesterNumber}") { backStackEntry ->
@@ -98,6 +100,14 @@ fun MainScreen(modifier: Modifier = Modifier) {
 
             composable("record") {
                 RecordScreen(viewModel = myEmoTalkViewModel, navController = navController)
+            }
+
+            composable("edit-personal-data") {
+                EditPersonalDataScreen(navController = navController)
+            }
+
+            composable("edit-account") {
+                EditAccountScreen(navController = navController)
             }
         }
     }

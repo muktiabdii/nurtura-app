@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.nurtura.R
 import com.example.nurtura.cache.UserData
 import com.example.nurtura.ui.theme.Accent
@@ -41,7 +42,7 @@ import com.example.nurtura.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navController: NavController) {
 
     val user = UserData
 
@@ -135,7 +136,7 @@ fun ProfileScreen() {
                                 modifier = Modifier
                                     .size(32.dp)
                                     .background(Color(0xFFF8F8F8), RoundedCornerShape(5.dp))
-                                    .clickable { /* Handle edit */ },
+                                    .clickable { navController.navigate("edit-account") },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(

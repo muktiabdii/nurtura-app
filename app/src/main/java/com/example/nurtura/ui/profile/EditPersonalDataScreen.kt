@@ -1,0 +1,229 @@
+package com.example.nurtura.ui.profile
+
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.nurtura.R
+import com.example.nurtura.cache.UserData
+import com.example.nurtura.ui.common.ActionButton
+import com.example.nurtura.ui.common.InputFormField
+import com.example.nurtura.ui.theme.*
+
+@Composable
+fun EditPersonalDataScreen(navController: NavController) {
+
+    val user = UserData
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(White)
+    ) {
+
+        // background
+        Image(
+            painter = painterResource(id = R.drawable.bg_splash),
+            contentDescription = null,
+            modifier = Modifier
+                .size(500.dp)
+                .offset(x = (-250).dp, y = (-250).dp)
+                .align(Alignment.TopStart),
+            contentScale = ContentScale.Crop
+        )
+
+        Image(
+            painter = painterResource(id = R.drawable.bg_splash),
+            contentDescription = null,
+            modifier = Modifier
+                .size(500.dp)
+                .offset(x = (250).dp, y = (250).dp)
+                .align(Alignment.BottomEnd),
+            contentScale = ContentScale.Crop
+        )
+
+        // header
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(40.dp))
+            Text(
+                text = "Edit Profile",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                    color = Black,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(60.dp))
+
+            // login/ sign up toggle
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(43.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(6.dp)
+                        .height(30.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = White
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+
+                        // login tab
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clickable {
+                                    navController.navigate("edit-account") {
+                                        popUpTo("edit-personal-data") { inclusive = true }
+                                    }
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Akun",
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                                    color = Grey
+                                )
+                            )
+                        }
+
+                        // sign up tab
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .background(
+                                    color = Accent,
+                                    shape = RoundedCornerShape(12.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Data Diri",
+                                style = TextStyle(
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                                    color = White
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                // Trimester
+                Text(
+                    text = "Usia Kehamilan (Trimester",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                        color = Accent
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                InputFormField(
+                    value = "${user.pregnancyAge}",
+                    onValueChange = {  },
+                    placeholder = "masukkan trimester"
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                // catatan kesehatan
+                Text(
+                    text = "Catatan Kesehatan (Riwayat Penyakit)",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                        color = Accent
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                InputFormField(
+                    value = user.healthNotes,
+                    onValueChange = {  },
+                    placeholder = "masukkan catatan kesehatan"
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                // tempat tinggal
+                Text(
+                    text = "Tempat Tinggal",
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                        color = Accent
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                InputFormField(
+                    value = user.location,
+                    onValueChange = {  },
+                    placeholder = "masukkan tempat tinggal"
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // save button
+            ActionButton(
+                text = "Simpan",
+                onClick = {  }
+            )
+        }
+    }
+}
