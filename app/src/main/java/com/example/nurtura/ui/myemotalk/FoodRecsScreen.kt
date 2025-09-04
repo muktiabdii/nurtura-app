@@ -54,12 +54,12 @@ fun FoodRecsScreen(
     // dummy
     val foodList = remember {
         listOf(
-            Food(id = 1, name = "Nasi Gudeg", rating = 4.5f, image = R.drawable.food_1, steps = listOf(), ingredients = listOf()),
-            Food(id = 2, name = "Ayam Bakar", rating = 4.3f, image = R.drawable.food_2, steps = listOf(), ingredients = listOf()),
-            Food(id = 3, name = "Soto Ayam", rating = 4.7f, image = R.drawable.food_3, steps = listOf(), ingredients = listOf()),
-            Food(id = 4, name = "Rendang", rating = 4.8f, image = R.drawable.food_4, steps = listOf(), ingredients = listOf()),
-            Food(id = 5, name = "Gado-gado", rating = 4.2f, image = R.drawable.food_5, steps = listOf(), ingredients = listOf()),
-            Food(id = 6, name = "Bakso", rating = 4.4f, image = R.drawable.food_6, steps = listOf(), ingredients = listOf())
+            Food(id = "1", name = "Nasi Gudeg", rating = 4.5f, image = R.drawable.food_1, steps = listOf(), ingredients = listOf(), imageResId = ""),
+            Food(id = "2", name = "Ayam Bakar", rating = 4.3f, image = R.drawable.food_2, steps = listOf(), ingredients = listOf(), imageResId = ""),
+            Food(id = "3", name = "Soto Ayam", rating = 4.7f, image = R.drawable.food_3, steps = listOf(), ingredients = listOf(), imageResId = ""),
+            Food(id = "4", name = "Rendang", rating = 4.8f, image = R.drawable.food_4, steps = listOf(), ingredients = listOf(), imageResId = ""),
+            Food(id = "5", name = "Gado-gado", rating = 4.2f, image = R.drawable.food_5, steps = listOf(), ingredients = listOf(), imageResId = ""),
+            Food(id = "6", name = "Bakso", rating = 4.4f, image = R.drawable.food_6, steps = listOf(), ingredients = listOf(), imageResId = "")
         )
     }
 

@@ -15,15 +15,17 @@ class GeminiRepositoryImpl() : GeminiRepository {
 
     private val db = FirebaseProvider.database
     private val geminiKey = BuildConfig.GEMINI_API_KEY
+    private val trimester = UserData.pregnancyAge
+    private val healthNotes = UserData.healthNotes
 
-    override suspend fun getGeminiReply(emotion: String, trimester: Int): Pair<Int?, Boolean> {
+    override suspend fun getGeminiReply(emotion: String): Pair<String?, Boolean> {
         return try {
             val finalPrompt = buildString {
-                appendLine("Kamu adalah seorang ahli nutrisi untuk ibu yang sedang mengandung dengan trimester $trimester.")
-                appendLine("Saat ini user merasa $emotion.")
+                appendLine("Kamu adalah seorang ahli nutrisi untuk ibu yang sedang mengandung dengan trimester $trimester dan dengan catatan kesehatan $healthNotes.")
+                appendLine("Saat ini ibu merasa $emotion.")
                 appendLine("Berikan 1 rekomendasi makanan sehat dalam format JSON object dengan struktur berikut:")
                 appendLine("{")
-                appendLine("  \"id\": int,")
+                appendLine("  \"id\": \"string\",")
                 appendLine("  \"name\": \"string\",")
                 appendLine("  \"ingredients\": [\"string\"],")
                 appendLine("  \"steps\": [\"string\"],")
@@ -63,26 +65,28 @@ class GeminiRepositoryImpl() : GeminiRepository {
             }
 
             val drawables = listOf(
-                R.drawable.food_1,
-                R.drawable.food_2,
-                R.drawable.food_3,
-                R.drawable.food_4,
-                R.drawable.food_5,
-                R.drawable.food_6
+                "food_1",
+                "food_2",
+                "food_3",
+                "food_4",
+                "food_5",
+                "food_6"
             )
-            val foodWithImage = food?.copy(image = drawables.random())
 
-            val uid = UserData.uid
+            val foodWithImage = food?.copy(imageResId = drawables.random())
 
-            if (foodWithImage != null && uid.isNotBlank()) {
-                db.child("users")
-                    .child(uid)
-                    .child("foodRecommendation")
-                    .child(foodWithImage.id.toString())
-                    .setValue(foodWithImage)
-
-                UserData.foodRecommendations[foodWithImage.id] = foodWithImage
+            foodWithImage?.let { f ->
+                val id = f.id
+                val uid = UserData.uid
+                if (!id.isNullOrBlank() && !uid.isNullOrBlank()) {
+                    db.child("users")
+                        .child(uid)
+                        .child("foodRecommendations")
+                        .child(id)
+                        .setValue(f)
+                }
             }
+
 
             Pair(foodWithImage?.id, true)
 

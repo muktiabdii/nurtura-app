@@ -82,14 +82,16 @@ fun FoodCard(
                     .padding(start = 8.dp, bottom = 4.dp, end = 8.dp)
             ) {
                 // Nama kiri atas
-                Text(
-                    text = food.name,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                    color = Black,
-                    maxLines = 2,
-                    modifier = Modifier.align(Alignment.TopStart)
-                )
+                food.name?.let {
+                    Text(
+                        text = it,
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                        color = Black,
+                        maxLines = 2,
+                        modifier = Modifier.align(Alignment.TopStart)
+                    )
+                }
 
                 // Rating kanan bawah
                 Row(

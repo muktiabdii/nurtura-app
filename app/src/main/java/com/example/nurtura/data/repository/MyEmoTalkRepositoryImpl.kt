@@ -1,11 +1,21 @@
 package com.example.nurtura.data.repository
 
+import android.content.Context
+import com.example.nurtura.R
+import com.example.nurtura.cache.UserData
 import com.example.nurtura.data.model.EmotionDetectionResponse
 import com.example.nurtura.data.remote.api.ApiEmotionDetectionService
+import com.example.nurtura.data.remote.firebase.FirebaseProvider
+import com.example.nurtura.domain.model.Food
 import com.example.nurtura.domain.repository.MyEmoTalkRepository
+import kotlinx.coroutines.tasks.await
 import okhttp3.MultipartBody
 
-class MyEmoTalkRepositoryImpl : MyEmoTalkRepository {
+class MyEmoTalkRepositoryImpl(private val context: Context) : MyEmoTalkRepository {
+
+    val db = FirebaseProvider.database
+    val user = UserData.uid
+
     override suspend fun detectEmotion(file: MultipartBody.Part): EmotionDetectionResponse? {
         val response = ApiEmotionDetectionService.instance.detectEmotion(file)
         return if (response.isSuccessful) {
@@ -14,4 +24,28 @@ class MyEmoTalkRepositoryImpl : MyEmoTalkRepository {
             null
         }
     }
+
+    override suspend fun getFoodDetail(id: String): Food? {
+        return try {
+            val snapshot = db.child("users")
+                .child(user)
+                .child("foodRecommendations")
+                .child(id)
+                .get()
+                .await()
+
+            val food = snapshot.getValue(Food::class.java)
+
+            val imageRes = context.resources.getIdentifier(
+                food?.imageResId ?: "",
+                "drawable",
+                context.packageName
+            ).takeIf { it != 0 } ?: R.drawable.food_1
+
+            food?.copy(image = imageRes)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
 }

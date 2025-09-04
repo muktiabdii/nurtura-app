@@ -44,7 +44,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val geminiRepo = GeminiRepositoryImpl()
     val geminiUseCase = GeminiUseCase(geminiRepo)
 
-    val myEmoTalkRepo = MyEmoTalkRepositoryImpl()
+    val myEmoTalkRepo = MyEmoTalkRepositoryImpl(context = LocalContext.current)
     val myEmoTalkUseCase = MyEmoTalkUseCase(myEmoTalkRepo)
     val myEmoTalkViewModel: MyEmoTalkViewModel = viewModel(factory = MyEmoTalkViewModel.Factory(myEmoTalkUseCase, geminiUseCase))
 
@@ -82,8 +82,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("food-detail/{foodId}") {
-                val foodId = it.arguments?.getString("foodId")?.toIntOrNull() ?: 1
-                FoodDetailScreen(id = foodId, navController = navController)
+                val foodId = it.arguments?.getString("foodId")?: ""
+                FoodDetailScreen(id = foodId, navController = navController, viewModel = myEmoTalkViewModel)
             }
 
             composable("doctor-detail/{doctorId}") {

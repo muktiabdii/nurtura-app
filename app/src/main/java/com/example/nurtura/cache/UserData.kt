@@ -9,7 +9,6 @@ object UserData {
     var pregnancyAge: Int = 0
     var healthNotes: String = ""
     var location: String = ""
-    val foodRecommendations: MutableMap<Int, Food> = mutableMapOf()
 
     fun set(uid: String, name: String, email: String, pregnancyAge: Int, healthNotes: String, location: String) {
         this.uid = uid

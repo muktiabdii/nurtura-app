@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.nurtura.cache.UserData
+import com.example.nurtura.domain.model.Food
 import com.example.nurtura.domain.usecase.GeminiUseCase
 import com.example.nurtura.domain.usecase.MyEmoTalkUseCase
 import com.example.nurtura.utils.AudioWavRecorder
@@ -33,8 +34,11 @@ class MyEmoTalkViewModel(
     private val _emotion = MutableStateFlow<String?>(null)
     val emotion: StateFlow<String?> = _emotion
 
-    private val _foodId = MutableStateFlow<Int?>(null)
-    val foodId: StateFlow<Int?> = _foodId
+    private val _foodId = MutableStateFlow<String?>(null)
+    val foodId: StateFlow<String?> = _foodId
+
+    private val _foodDetail = MutableStateFlow<Food?>(null)
+    val foodDetail: StateFlow<Food?> = _foodDetail
 
     fun resetFoodId() {
         _foodId.value = null
@@ -59,12 +63,13 @@ class MyEmoTalkViewModel(
             viewModelScope.launch {
                 try {
                     val result = myEmoTalkUseCase(body)
-                    val trimester = UserData.pregnancyAge
                     result?.emotion?.let { emo ->
                         _emotion.value = emo
-                        getFoodRecommendation(emo, trimester)
+                        getFoodRecommendation(emo)
+                    } ?: run {
+                        _isLoading.value = false
                     }
-                } finally {
+                } catch (e: Exception) {
                     _isLoading.value = false
                 }
             }
@@ -73,16 +78,24 @@ class MyEmoTalkViewModel(
         }
     }
 
-
-    fun getFoodRecommendation(emotion: String, trimester: Int) {
+    fun getFoodRecommendation(emotion: String) {
         viewModelScope.launch {
-            val (id, success) = geminiUseCase.getSaranGemini(emotion, trimester)
+            val (id, success) = geminiUseCase.getSaranGemini(emotion)
             if (success && id != null) {
                 _foodId.value = id
             }
+            _isLoading.value = false
         }
     }
 
+    fun loadFoodDetail(foodId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val food = myEmoTalkUseCase.getFoodDetail(foodId)
+            _foodDetail.value = food
+            _isLoading.value = false
+        }
+    }
 
     class Factory(
         private val myEmoTalkUseCase: MyEmoTalkUseCase,

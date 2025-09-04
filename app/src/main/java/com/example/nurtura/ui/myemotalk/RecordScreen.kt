@@ -69,7 +69,9 @@ fun RecordScreen(
 
     LaunchedEffect(foodId) {
         foodId?.let { id ->
-            navController.navigate("food-detail/$id")
+            navController.navigate("food-detail/$id") {
+                popUpTo("record") { inclusive = true }
+            }
             viewModel.resetFoodId()
         }
     }
