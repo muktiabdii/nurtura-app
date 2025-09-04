@@ -23,6 +23,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import com.example.nurtura.R
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,155 +51,145 @@ import com.example.nurtura.ui.theme.White
 @Composable
 fun FoodRecsScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: MyEmoTalkViewModel
 ) {
+    // Collect state
+    val isLoading by viewModel.isLoading.collectAsState()
+    val foodList by viewModel.foodRecommendations.collectAsState()
 
-    // dummy
-    val foodList = remember {
-        listOf(
-            Food(id = "1", name = "Nasi Gudeg", rating = 4.5f, image = R.drawable.food_1, steps = listOf(), ingredients = listOf(), imageResId = ""),
-            Food(id = "2", name = "Ayam Bakar", rating = 4.3f, image = R.drawable.food_2, steps = listOf(), ingredients = listOf(), imageResId = ""),
-            Food(id = "3", name = "Soto Ayam", rating = 4.7f, image = R.drawable.food_3, steps = listOf(), ingredients = listOf(), imageResId = ""),
-            Food(id = "4", name = "Rendang", rating = 4.8f, image = R.drawable.food_4, steps = listOf(), ingredients = listOf(), imageResId = ""),
-            Food(id = "5", name = "Gado-gado", rating = 4.2f, image = R.drawable.food_5, steps = listOf(), ingredients = listOf(), imageResId = ""),
-            Food(id = "6", name = "Bakso", rating = 4.4f, image = R.drawable.food_6, steps = listOf(), ingredients = listOf(), imageResId = "")
-        )
+    // Trigger load saat pertama kali screen dibuka
+    LaunchedEffect(Unit) {
+        viewModel.loadAllFoodRecommendations()
     }
 
-    LazyColumn(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .background(White),
-        contentPadding = PaddingValues(bottom = 20.dp)
+            .background(White)
     ) {
-        // header
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-            ) {
-
-                // background
-                Image(
-                    painter = painterResource(id = R.drawable.header_home),
-                    contentDescription = "Header Background",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxSize()
-                )
-
-                // header text
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(start = 20.dp, top = 40.dp)
-                ) {
-                    Text(
-                        text = "Ask Nurtura",
-                        fontSize = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                        color = White
-                    )
-                }
-
-                IconButton(
-                    onClick = {  },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(30.dp)
-                        .size(50.dp)
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_mic),
-                        contentDescription = "Voice Search",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .graphicsLayer(alpha = 0.99f)
-                            .drawWithCache {
-                                val brush = Brush.verticalGradient(
-                                    colors = listOf(Color(0xFF5980B7), Color(0xFF273951))
-                                )
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(brush, blendMode = BlendMode.SrcAtop)
-                                }
-                            }
-                    )
-                }
+        if (isLoading) {
+            // Loading indicator
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                androidx.compose.material3.CircularProgressIndicator()
             }
-        }
-
-        item { Spacer(modifier = Modifier.height(24.dp)) }
-
-        // search bar
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        } else {
+            LazyColumn(
+                contentPadding = PaddingValues(bottom = 20.dp)
             ) {
-                // back button
-                IconButton(
-                    onClick = { navController.popBackStack()  },
-                    modifier = Modifier.size(54.dp),
-                    content = {
+                // header
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    ) {
                         Image(
-                            painter = painterResource(id = R.drawable.ic_back_lighter),
-                            contentDescription = "back",
-                            modifier = Modifier.size(54.dp),
-                            contentScale = ContentScale.FillBounds
+                            painter = painterResource(id = R.drawable.header_home),
+                            contentDescription = "Header Background",
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier.fillMaxSize()
                         )
-                    }
-                )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                        Column(
+                            modifier = Modifier
+                                .align(Alignment.TopStart)
+                                .padding(start = 20.dp, top = 40.dp)
+                        ) {
+                            Text(
+                                text = "Ask Nurtura",
+                                fontSize = 24.sp,
+                                fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                                color = White
+                            )
+                        }
+
+                        IconButton(
+                            onClick = { navController.navigate("record") },
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .padding(30.dp)
+                                .size(50.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_mic),
+                                contentDescription = "Voice Search",
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
+                    }
+                }
+
+                item { Spacer(modifier = Modifier.height(24.dp)) }
 
                 // search bar
-                Box(modifier = Modifier.weight(1f)) {
-                    SearchBar(placeholder = "Temukan Makanan")
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = { navController.popBackStack() },
+                            modifier = Modifier.size(54.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_back_lighter),
+                                contentDescription = "back",
+                                modifier = Modifier.size(54.dp),
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Box(modifier = Modifier.weight(1f)) {
+                            SearchBar(placeholder = "Temukan Makanan")
+                        }
+                    }
                 }
-            }
-        }
 
-        item { Spacer(modifier = Modifier.height(24.dp)) }
+                item { Spacer(modifier = Modifier.height(24.dp)) }
 
-        // title
-        item {
-            Text(
-                text = "Rekomendasi Makanan",
-                fontSize = 20.sp,
-                fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                color = Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-            )
-        }
-
-        item { Spacer(modifier = Modifier.height(16.dp)) }
-
-        // food grid
-        items(foodList.chunked(2)) { rowItems ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-            ) {
-                for (food in rowItems) {
-                    FoodCard(
-                        food = food,
-                        modifier = Modifier.weight(1f),
-                        onClick = { navController.navigate("food-detail/${food.id}") }
+                // title
+                item {
+                    Text(
+                        text = "Rekomendasi Makanan",
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                        color = Black,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
                     )
                 }
-                if (rowItems.size < 2) {
-                    Spacer(modifier = Modifier.weight(1f))
+
+                item { Spacer(modifier = Modifier.height(16.dp)) }
+
+                // food grid
+                items(foodList.chunked(2)) { rowItems ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp)
+                    ) {
+                        for (food in rowItems) {
+                            FoodCard(
+                                food = food,
+                                modifier = Modifier.weight(1f),
+                                onClick = { navController.navigate("food-detail/${food.id}") }
+                            )
+                        }
+                        if (rowItems.size < 2) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 }

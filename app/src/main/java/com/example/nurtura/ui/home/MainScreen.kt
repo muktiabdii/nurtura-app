@@ -78,7 +78,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("food-recs") {
-                FoodRecsScreen(navController = navController)
+                FoodRecsScreen(navController = navController, viewModel = myEmoTalkViewModel)
             }
 
             composable("food-detail/{foodId}") {

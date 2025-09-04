@@ -36,160 +36,158 @@ fun FoodDetailScreen(
     id: String,
     viewModel: MyEmoTalkViewModel
 ) {
+    // State dari ViewModel
     val food by viewModel.foodDetail.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    LaunchedEffect(Unit) {
+    // Trigger load saat screen pertama kali dibuka
+    LaunchedEffect(id) {
         viewModel.loadFoodDetail(id)
     }
 
-    if (isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-            Text("Memuat detail makanan...")
-        }
-    } else if (food == null) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Data makanan tidak ditemukan")
-        }
-    } else {
-        food?.let { foodData ->
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White)
-            ) {
-                item {
-                    // Header
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(140.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.header_home),
-                            contentDescription = "Header Background",
+    Box(modifier = Modifier.fillMaxSize().background(White)) {
+        if (isLoading) {
+            // Loading indicator
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            food?.let { foodData ->
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    item {
+                        // Header
+                        Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .offset(y = (-10).dp),
-                            contentScale = ContentScale.FillBounds
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(start = 10.dp, end = 10.dp, bottom = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                                .fillMaxWidth()
+                                .height(140.dp)
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.ic_back_darker),
-                                contentDescription = "Back",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clickable(onClick = { navController.popBackStack() })
+                                painter = painterResource(id = R.drawable.header_home),
+                                contentDescription = "Header Background",
+                                modifier = Modifier.fillMaxSize().offset(y = (-10).dp),
+                                contentScale = ContentScale.FillBounds
                             )
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(start = 10.dp, end = 10.dp, bottom = 16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                Text(
-                                    text = "Nurtura Food Recommendation",
-                                    color = White,
-                                    fontSize = 14.sp,
-                                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                                    lineHeight = 20.sp,
-                                    textAlign = TextAlign.Center
+                                // Back button
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_back_darker),
+                                    contentDescription = "Back",
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clickable { navController.popBackStack() }
                                 )
-                                foodData.name?.let {
+
+                                // Title
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(
-                                        text = it,
+                                        text = "Nurtura Food Recommendation",
+                                        color = White,
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                                        textAlign = TextAlign.Center
+                                    )
+                                    Text(
+                                        text = foodData.name ?: "",
                                         color = White,
                                         fontSize = 14.sp,
                                         fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
-                                        lineHeight = 20.sp,
                                         textAlign = TextAlign.Center,
                                         maxLines = 2,
+                                        lineHeight = 18.sp,
                                         overflow = TextOverflow.Ellipsis,
                                         modifier = Modifier.widthIn(max = 200.dp)
                                     )
                                 }
+
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_star),
+                                    contentDescription = "Star Icon",
+                                    modifier = Modifier.size(40.dp)
+                                )
                             }
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_star),
-                                contentDescription = "Star Icon",
-                                modifier = Modifier.size(40.dp)
-                            )
                         }
-                    }
-                    // Main card
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = White)
-                    ) {
-                        Box(
+
+                        // Main card
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .size(160.dp),
-                            contentAlignment = Alignment.Center
+                                .padding(20.dp),
+                            colors = CardDefaults.cardColors(containerColor = White)
                         ) {
-                            Image(
-                                painter = painterResource(id = foodData.image),
-                                contentDescription = null,
-                                modifier = Modifier.size(160.dp),
-                                contentScale = ContentScale.Fit
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                text = "Bahan",
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
-                                textAlign = TextAlign.Start,
-                                color = Black
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            foodData.ingredients?.forEach { point ->
-                                Text(
-                                    text = "• $point",
-                                    fontSize = 14.sp,
-                                    color = Alt3,
-                                    fontFamily = FontFamily(Font(R.font.raleway_medium)),
-                                    lineHeight = 20.sp,
-                                    modifier = Modifier.padding(bottom = 4.dp)
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(160.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painterResource(id = foodData.image),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(160.dp),
+                                    contentScale = ContentScale.Fit
                                 )
                             }
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Text(
-                                text = "Cara Membuat",
-                                fontSize = 20.sp,
-                                fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
-                                textAlign = TextAlign.Start,
-                                color = Black
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            foodData.steps?.forEachIndexed { index, point ->
+
+                            Column(
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
                                 Text(
-                                    text = "${index + 1}. $point",
-                                    fontSize = 14.sp,
-                                    color = Alt3,
-                                    fontFamily = FontFamily(Font(R.font.raleway_medium)),
-                                    lineHeight = 20.sp,
-                                    modifier = Modifier.padding(bottom = 4.dp)
+                                    text = "Bahan",
+                                    fontSize = 20.sp,
+                                    fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                                    color = Black
                                 )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                foodData.ingredients?.forEach { point ->
+                                    Text(
+                                        text = "• $point",
+                                        fontSize = 14.sp,
+                                        color = Alt3,
+                                        fontFamily = FontFamily(Font(R.font.raleway_medium)),
+                                        lineHeight = 20.sp,
+                                        modifier = Modifier.padding(bottom = 4.dp)
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(24.dp))
+                                Text(
+                                    text = "Cara Membuat",
+                                    fontSize = 20.sp,
+                                    fontFamily = FontFamily(Font(R.font.raleway_semi_bold)),
+                                    color = Black
+                                )
+                                Spacer(modifier = Modifier.height(12.dp))
+                                foodData.steps?.forEachIndexed { index, point ->
+                                    Text(
+                                        text = "${index + 1}. $point",
+                                        fontSize = 14.sp,
+                                        color = Alt3,
+                                        fontFamily = FontFamily(Font(R.font.raleway_medium)),
+                                        lineHeight = 20.sp,
+                                        modifier = Modifier.padding(bottom = 4.dp)
+                                    )
+                                }
                             }
                         }
                     }
+                }
+            } ?: run {
+                // Jika food null tapi loading false, tampil pesan kosong
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "Tidak ada data makanan",
+                        color = Black,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Font(R.font.raleway_medium))
+                    )
                 }
             }
         }

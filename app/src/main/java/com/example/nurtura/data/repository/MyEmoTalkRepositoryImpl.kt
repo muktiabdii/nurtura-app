@@ -48,4 +48,31 @@ class MyEmoTalkRepositoryImpl(private val context: Context) : MyEmoTalkRepositor
         }
     }
 
+    override suspend fun getAllFoodRecommendations(): List<Food> {
+        return try {
+            val snapshot = db.child("users")
+                .child(user)
+                .child("foodRecommendations")
+                .get()
+                .await()
+
+            val foods = mutableListOf<Food>()
+
+            snapshot.children.forEach { child ->
+                val food = child.getValue(Food::class.java)
+                val imageRes = context.resources.getIdentifier(
+                    food?.imageResId ?: "",
+                    "drawable",
+                    context.packageName
+                ).takeIf { it != 0 } ?: R.drawable.food_1
+
+                food?.let { foods.add(it.copy(image = imageRes)) }
+            }
+
+            foods
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
 }

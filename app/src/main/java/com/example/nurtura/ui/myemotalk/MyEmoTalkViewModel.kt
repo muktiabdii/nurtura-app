@@ -40,6 +40,9 @@ class MyEmoTalkViewModel(
     private val _foodDetail = MutableStateFlow<Food?>(null)
     val foodDetail: StateFlow<Food?> = _foodDetail
 
+    private val _foodRecommendations = MutableStateFlow<List<Food>>(emptyList())
+    val foodRecommendations: StateFlow<List<Food>> = _foodRecommendations
+
     fun resetFoodId() {
         _foodId.value = null
     }
@@ -94,6 +97,20 @@ class MyEmoTalkViewModel(
             val food = myEmoTalkUseCase.getFoodDetail(foodId)
             _foodDetail.value = food
             _isLoading.value = false
+        }
+    }
+
+    fun loadAllFoodRecommendations() {
+        viewModelScope.launch {
+            _isLoading.value = true
+            try {
+                val foods = myEmoTalkUseCase.getAllFoodRecommendations()
+                _foodRecommendations.value = foods
+            } catch (e: Exception) {
+                _foodRecommendations.value = emptyList()
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 

@@ -7,4 +7,5 @@ import okhttp3.MultipartBody
 interface MyEmoTalkRepository {
     suspend fun detectEmotion(file: MultipartBody.Part): EmotionDetectionResponse?
     suspend fun getFoodDetail(id: String): Food?
+    suspend fun getAllFoodRecommendations(): List<Food>
 }

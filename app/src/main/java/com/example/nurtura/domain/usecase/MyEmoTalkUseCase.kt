@@ -13,4 +13,8 @@ class MyEmoTalkUseCase(private val repository: MyEmoTalkRepository) {
     suspend fun getFoodDetail(id: String): Food? {
         return repository.getFoodDetail(id)
     }
+
+    suspend fun getAllFoodRecommendations(): List<Food> {
+        return repository.getAllFoodRecommendations()
+    }
 }
