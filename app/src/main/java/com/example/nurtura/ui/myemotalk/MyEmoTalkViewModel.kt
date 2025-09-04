@@ -1,16 +1,12 @@
 package com.example.nurtura.ui.myemotalk
 
-import android.Manifest
 import android.content.Context
-import android.util.Log
-import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.nurtura.cache.UserData
+import com.example.nurtura.domain.usecase.GeminiUseCase
 import com.example.nurtura.domain.usecase.MyEmoTalkUseCase
-import com.example.nurtura.domain.usecase.OnBoardingUseCase
-import com.example.nurtura.domain.usecase.UserUseCase
-import com.example.nurtura.ui.splash.SplashViewModel
 import com.example.nurtura.utils.AudioWavRecorder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +16,10 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-class MyEmoTalkViewModel(private val myEmoTalkUseCase: MyEmoTalkUseCase) : ViewModel() {
+class MyEmoTalkViewModel(
+    private val myEmoTalkUseCase: MyEmoTalkUseCase,
+    private val geminiUseCase: GeminiUseCase
+) : ViewModel() {
 
     private var recorder: AudioWavRecorder? = null
     private var audioFile: File? = null
@@ -33,6 +32,13 @@ class MyEmoTalkViewModel(private val myEmoTalkUseCase: MyEmoTalkUseCase) : ViewM
 
     private val _emotion = MutableStateFlow<String?>(null)
     val emotion: StateFlow<String?> = _emotion
+
+    private val _foodId = MutableStateFlow<Int?>(null)
+    val foodId: StateFlow<Int?> = _foodId
+
+    fun resetFoodId() {
+        _foodId.value = null
+    }
 
     fun startRecording(context: Context) {
         audioFile = File(context.cacheDir, "recorded_audio.wav")
@@ -53,8 +59,11 @@ class MyEmoTalkViewModel(private val myEmoTalkUseCase: MyEmoTalkUseCase) : ViewM
             viewModelScope.launch {
                 try {
                     val result = myEmoTalkUseCase(body)
-                    _emotion.value = result?.emotion
-                    Log.d("MyEmoTalkViewModel", "Emotion: ${result?.emotion}")
+                    val trimester = UserData.pregnancyAge
+                    result?.emotion?.let { emo ->
+                        _emotion.value = emo
+                        getFoodRecommendation(emo, trimester)
+                    }
                 } finally {
                     _isLoading.value = false
                 }
@@ -64,11 +73,25 @@ class MyEmoTalkViewModel(private val myEmoTalkUseCase: MyEmoTalkUseCase) : ViewM
         }
     }
 
-    class Factory(private val myEmoTalkUseCase: MyEmoTalkUseCase) : ViewModelProvider.Factory {
+
+    fun getFoodRecommendation(emotion: String, trimester: Int) {
+        viewModelScope.launch {
+            val (id, success) = geminiUseCase.getSaranGemini(emotion, trimester)
+            if (success && id != null) {
+                _foodId.value = id
+            }
+        }
+    }
+
+
+    class Factory(
+        private val myEmoTalkUseCase: MyEmoTalkUseCase,
+        private val geminiUseCase: GeminiUseCase
+    ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MyEmoTalkViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return MyEmoTalkViewModel(myEmoTalkUseCase) as T
+                return MyEmoTalkViewModel(myEmoTalkUseCase, geminiUseCase) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

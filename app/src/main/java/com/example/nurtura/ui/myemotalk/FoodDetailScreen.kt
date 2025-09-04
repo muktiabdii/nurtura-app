@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.nurtura.R
+import com.example.nurtura.cache.UserData
 import com.example.nurtura.domain.model.Food
 import com.example.nurtura.ui.theme.Alt3
 import com.example.nurtura.ui.theme.Black
@@ -30,40 +31,10 @@ import com.example.nurtura.ui.theme.White
 @Composable
 fun FoodDetailScreen(
     navController: NavController,
-    id: String
+    id: Int
 ) {
 
-    // dummy
-    val foodList = listOf(
-        Food(
-            id = "1",
-            name = "Nasi Gudeg",
-            ingredients = listOf(
-                "1 cangkir quinoa",
-                "2 cangkir kaldu sayuran atau air",
-                "1/2 cangkir tomat ceri, dibelah dua",
-                "1/2 cangkir mentimun, dipotong dadu",
-                "1/4 cangkir bawang merah, dicincang",
-                "1/4 cangkir peterseli segar, dicincang",
-                "1/4 cangkir keju feta, dihancurkan (opsional)",
-                "2 sendok makan jus lemon",
-                "1 sendok makan minyak zaitun extra virgin",
-                "Garam dan merica secukupnya"
-            ),
-            steps = listOf(
-                "Bilas quinoa di bawah air dingin. Masukkan quinoa dan kaldu sayuran/air ke dalam panci, didihkan. Kecilkan api, tutup, dan masak selama 15 menit, atau sampai semua cairan terserap.",
-                "Angkat dari api dan biarkan selama 5 menit, lalu garpu quinoa.",
-                "Dalam mangkuk besar, campurkan quinoa yang sudah dimasak, tomat ceri, mentimun, bawang merah, dan peterseli.",
-                "Dalam mangkuk kecil, kocok jus lemon, minyak zaitun, garam, dan merica.",
-                "Tuang dressing di atas salad dan aduk rata. Tambahkan keju feta jika menggunakan.",
-                "Sajikan dingin atau pada suhu kamar."
-            ),
-            rating = 4.5f,
-            image = R.drawable.food_1
-        )
-    )
-
-    val food = foodList.find { it.id == id }
+    val food = UserData.foodRecommendations[id]
 
     LazyColumn(
         modifier = Modifier

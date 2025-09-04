@@ -48,6 +48,7 @@ fun RecordScreen(
     val context = LocalContext.current
     val isRecording by viewModel.isRecording.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val foodId by viewModel.foodId.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -64,6 +65,13 @@ fun RecordScreen(
 
     LaunchedEffect(Unit) {
         launcher.launch(android.Manifest.permission.RECORD_AUDIO)
+    }
+
+    LaunchedEffect(foodId) {
+        foodId?.let { id ->
+            navController.navigate("food-detail/$id")
+            viewModel.resetFoodId()
+        }
     }
 
     Box(

@@ -1,7 +1,7 @@
 package com.example.nurtura.domain.model
 
 data class Food(
-    val id: String,
+    val id: Int,
     val name: String,
     val ingredients: List<String>,
     val steps: List<String>,

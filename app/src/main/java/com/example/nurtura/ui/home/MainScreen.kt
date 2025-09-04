@@ -12,8 +12,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nurtura.data.remote.api.CloudinaryService
 import com.example.nurtura.data.repository.CloudinaryRepositoryImpl
+import com.example.nurtura.data.repository.GeminiRepositoryImpl
 import com.example.nurtura.data.repository.MyEmoTalkRepositoryImpl
+import com.example.nurtura.domain.repository.GeminiRepository
 import com.example.nurtura.domain.usecase.CloudinaryUseCase
+import com.example.nurtura.domain.usecase.GeminiUseCase
 import com.example.nurtura.domain.usecase.MyEmoTalkUseCase
 import com.example.nurtura.ui.common.BottomNavBar
 import com.example.nurtura.ui.mydoc.DoctorDetailScreen
@@ -38,9 +41,12 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val cloudinaryUseCase = CloudinaryUseCase(cloudinaryRepo)
     val cloudinaryViewModel: MyDocViewModel = viewModel(factory = MyDocViewModel.Factory(cloudinaryUseCase))
 
+    val geminiRepo = GeminiRepositoryImpl()
+    val geminiUseCase = GeminiUseCase(geminiRepo)
+
     val myEmoTalkRepo = MyEmoTalkRepositoryImpl()
     val myEmoTalkUseCase = MyEmoTalkUseCase(myEmoTalkRepo)
-    val myEmoTalkViewModel: MyEmoTalkViewModel = viewModel(factory = MyEmoTalkViewModel.Factory(myEmoTalkUseCase))
+    val myEmoTalkViewModel: MyEmoTalkViewModel = viewModel(factory = MyEmoTalkViewModel.Factory(myEmoTalkUseCase, geminiUseCase))
 
     Scaffold(
         bottomBar = {
@@ -76,7 +82,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("food-detail/{foodId}") {
-                val foodId = it.arguments?.getString("foodId")?: ""
+                val foodId = it.arguments?.getString("foodId")?.toIntOrNull() ?: 1
                 FoodDetailScreen(id = foodId, navController = navController)
             }
 

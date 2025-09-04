@@ -114,18 +114,3 @@ fun FoodCard(
         }
     }
 }
-
-@Preview
-@Composable
-private fun asf() {
-    FoodCard(
-        food = Food(
-            id = "1",
-            name = "Ebi Furai Bowl",
-            ingredients = listOf(),
-            steps = listOf(),
-            rating = 4.5f,
-            image = R.drawable.food_1
-        )
-    )
-}
