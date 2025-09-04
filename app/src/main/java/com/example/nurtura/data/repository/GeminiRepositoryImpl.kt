@@ -35,11 +35,9 @@ class GeminiRepositoryImpl() : GeminiRepository {
             }
 
             val request = GeminiRequest(
-                contents = listOf(
-                    GeminiRequest.Content(
-                        parts = listOf(GeminiRequest.Part(text = finalPrompt))
-                    )
-                )
+                contents = listOf(GeminiRequest.Content(
+                    parts = listOf(GeminiRequest.Part(text = finalPrompt))
+                ))
             )
 
             val response: GeminiResponse = GeminiProvider.service.sendPrompt(
@@ -56,44 +54,34 @@ class GeminiRepositoryImpl() : GeminiRepository {
                 .trim()
 
             val gson = Gson()
-            val food: Food? = try {
-                gson.fromJson(cleanJson, Food::class.java)
-            }
+            val food: Food? = try { gson.fromJson(cleanJson, Food::class.java) } catch (e: Exception) { null }
 
-            catch (e: Exception) {
-                null
-            }
+            val drawables = listOf("food_1","food_2","food_3","food_4","food_5","food_6")
 
-            val drawables = listOf(
-                "food_1",
-                "food_2",
-                "food_3",
-                "food_4",
-                "food_5",
-                "food_6"
+            val foodId = food?.id.takeIf { !it.isNullOrBlank() } ?: db.push().key
+
+            val foodWithImage = food?.copy(
+                id = foodId ?: "",
+                imageResId = drawables.random()
             )
 
-            val foodWithImage = food?.copy(imageResId = drawables.random())
-
-            foodWithImage?.let { f ->
-                val id = f.id
+            foodWithImage?.id?.let { idNonNull ->
                 val uid = UserData.uid
-                if (!id.isNullOrBlank() && !uid.isNullOrBlank()) {
+                if (!uid.isNullOrBlank()) {
                     db.child("users")
                         .child(uid)
                         .child("foodRecommendations")
-                        .child(id)
-                        .setValue(f)
+                        .child(idNonNull)
+                        .setValue(foodWithImage)
                 }
             }
 
 
             Pair(foodWithImage?.id, true)
 
-        }
-
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Pair(null, false)
         }
     }
+
 }
