@@ -10,7 +10,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -18,9 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -36,12 +33,12 @@ fun LoginScreen(
 ) {
 
     val context = LocalContext.current
-    val loginState by viewModel.loginState.collectAsState()
+    val loginState by viewModel.loginAuthState.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
     when (loginState) {
-        is State.Success -> {
+        is AuthState.Success -> {
             LaunchedEffect(Unit) {
                 navController.navigate("main") {
                     popUpTo("login") { inclusive = true }
@@ -51,8 +48,8 @@ fun LoginScreen(
             }
         }
 
-        is State.Error -> {
-            val message = (loginState as State.Error).message
+        is AuthState.Error -> {
+            val message = (loginState as AuthState.Error).message
             LaunchedEffect(message) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 viewModel.resetLoginState()
@@ -266,7 +263,7 @@ fun LoginScreen(
             ActionButton(
                 text = "Login",
                 onClick = { viewModel.login(email, password) },
-                isLoading = loginState is State.Loading
+                isLoading = loginState is AuthState.Loading
             )
 
             Spacer(modifier = Modifier.height(24.dp))

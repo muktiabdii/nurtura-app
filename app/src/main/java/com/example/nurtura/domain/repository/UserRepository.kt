@@ -8,6 +8,6 @@ interface UserRepository {
     suspend fun saveUserToCache(uid: String, name: String, email: String, pregnancyAge: Int, healthNotes: String, location: String)
     fun getUserUidFlow(): Flow<String?>
     suspend fun logout()
-    suspend fun editProfile(uid: String, name: String, email: String): Boolean
+    suspend fun editProfile(uid: String, updates: Map<String, Any>): Boolean
     suspend fun deleteAccount(uid: String)
 }

@@ -37,30 +37,47 @@ class UserRepositoryImpl(private val preferencesManager: PreferencesManager) : U
     }
 
     // function untuk edit profile
-    override suspend fun editProfile(uid: String, name: String, email: String): Boolean {
+    override suspend fun editProfile(uid: String, updates: Map<String, Any>): Boolean {
         try {
+            // update firebase
+            database.child("users").child(uid).updateChildren(updates).await()
 
-            // update ke firebase
-            val userUpdates = hashMapOf<String, Any>(
-                "uid" to uid,
-                "name" to name,
-                "email" to email
+            // update datastore & cache
+            val userCache = UserData
+            val newData = mapOf(
+                "uid" to (updates["uid"] ?: userCache.uid),
+                "name" to (updates["name"] ?: userCache.name),
+                "email" to (updates["email"] ?: userCache.email),
+                "pregnancyAge" to (updates["pregnancyAge"] ?: userCache.pregnancyAge),
+                "healthNotes" to (updates["healthNotes"] ?: userCache.healthNotes),
+                "location" to (updates["location"] ?: userCache.location)
             )
-            database.child("users").child(uid).updateChildren(userUpdates).await()
 
-            // update di datastore
-            preferencesManager.saveUser(uid, name, email, 0, "", "")
+            preferencesManager.saveUser(
+                newData["uid"] as String,
+                newData["name"] as String,
+                newData["email"] as String,
+                newData["pregnancyAge"] as Int,
+                newData["healthNotes"] as String,
+                newData["location"] as String
+            )
 
-            // update di cache
-            UserData.set(uid, name, email, 0, "", "")
+            UserData.set(
+                newData["uid"] as String,
+                newData["name"] as String,
+                newData["email"] as String,
+                newData["pregnancyAge"] as Int,
+                newData["healthNotes"] as String,
+                newData["location"] as String
+            )
+
             return true
-        }
-
-        catch (e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
             throw e
         }
     }
+
 
     // function untuk hapus akun
     override suspend fun deleteAccount(uid: String) {

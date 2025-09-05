@@ -86,7 +86,8 @@ fun ProfileScreen(navController: NavController) {
                             contentDescription = "Profile picture",
                             modifier = Modifier
                                 .size(45.dp)
-                                .clip(CircleShape),
+                                .clip(CircleShape)
+                                .clickable{ navController.navigate("edit-account") },
                             contentScale = ContentScale.Crop,
                             colorFilter = ColorFilter.tint(White)
                         )

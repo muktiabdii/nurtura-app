@@ -31,9 +31,38 @@ import com.example.nurtura.ui.common.InputFormField
 import com.example.nurtura.ui.theme.*
 
 @Composable
-fun EditPersonalDataScreen(navController: NavController) {
+fun EditPersonalDataScreen(
+    navController: NavController,
+    viewModel: UserViewModel
+) {
 
-    val user = UserData
+    val context = LocalContext.current
+    val profileState by viewModel.profileState.collectAsState()
+    val userState by viewModel.userState.collectAsState()
+    var pregnancyAge by remember { mutableIntStateOf(userState.pregnancyAge) }
+    var healthNotes by remember { mutableStateOf(userState.healthNotes) }
+    var location by remember { mutableStateOf(userState.location) }
+
+    when (profileState) {
+        is ProfileState.Success -> {
+            LaunchedEffect(Unit) {
+                navController.navigate("profile") {
+                    popUpTo("edit-account") { inclusive = true }
+                }
+                viewModel.resetProfileState()
+            }
+        }
+
+        is ProfileState.Error -> {
+            val message = (profileState as ProfileState.Error).message
+            LaunchedEffect(message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel.resetProfileState()
+            }
+        }
+
+        else -> Unit
+    }
 
     Box(
         modifier = Modifier
@@ -173,8 +202,8 @@ fun EditPersonalDataScreen(navController: NavController) {
                 )
 
                 InputFormField(
-                    value = "${user.pregnancyAge}",
-                    onValueChange = {  },
+                    value = "$pregnancyAge",
+                    onValueChange = { pregnancyAge = it.toIntOrNull() ?: 0 },
                     placeholder = "masukkan trimester"
                 )
 
@@ -192,8 +221,8 @@ fun EditPersonalDataScreen(navController: NavController) {
                 )
 
                 InputFormField(
-                    value = user.healthNotes,
-                    onValueChange = {  },
+                    value = healthNotes,
+                    onValueChange = { healthNotes = it },
                     placeholder = "masukkan catatan kesehatan"
                 )
 
@@ -211,8 +240,8 @@ fun EditPersonalDataScreen(navController: NavController) {
                 )
 
                 InputFormField(
-                    value = user.location,
-                    onValueChange = {  },
+                    value = location,
+                    onValueChange = { location = it },
                     placeholder = "masukkan tempat tinggal"
                 )
             }
@@ -222,7 +251,8 @@ fun EditPersonalDataScreen(navController: NavController) {
             // save button
             ActionButton(
                 text = "Simpan",
-                onClick = {  }
+                onClick = { viewModel.editPersonalData(pregnancyAge, healthNotes, location) },
+                isLoading = profileState is ProfileState.Loading
             )
         }
     }

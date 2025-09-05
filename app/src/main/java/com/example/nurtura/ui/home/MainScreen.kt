@@ -10,14 +10,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.nurtura.data.datastore.PreferencesManager
 import com.example.nurtura.data.remote.api.CloudinaryService
 import com.example.nurtura.data.repository.CloudinaryRepositoryImpl
 import com.example.nurtura.data.repository.GeminiRepositoryImpl
 import com.example.nurtura.data.repository.MyEmoTalkRepositoryImpl
+import com.example.nurtura.data.repository.UserRepositoryImpl
 import com.example.nurtura.domain.repository.GeminiRepository
 import com.example.nurtura.domain.usecase.CloudinaryUseCase
 import com.example.nurtura.domain.usecase.GeminiUseCase
 import com.example.nurtura.domain.usecase.MyEmoTalkUseCase
+import com.example.nurtura.domain.usecase.UserUseCase
 import com.example.nurtura.ui.common.BottomNavBar
 import com.example.nurtura.ui.mydoc.DoctorDetailScreen
 import com.example.nurtura.ui.mydoc.MyDocScreen
@@ -30,6 +33,7 @@ import com.example.nurtura.ui.myemotalk.RecordScreen
 import com.example.nurtura.ui.profile.EditAccountScreen
 import com.example.nurtura.ui.profile.EditPersonalDataScreen
 import com.example.nurtura.ui.profile.ProfileScreen
+import com.example.nurtura.ui.profile.UserViewModel
 import com.example.nurtura.ui.trimester.TrimesterScreen
 
 @Composable
@@ -49,6 +53,10 @@ fun MainScreen(modifier: Modifier = Modifier) {
     val myEmoTalkRepo = MyEmoTalkRepositoryImpl(context = LocalContext.current)
     val myEmoTalkUseCase = MyEmoTalkUseCase(myEmoTalkRepo)
     val myEmoTalkViewModel: MyEmoTalkViewModel = viewModel(factory = MyEmoTalkViewModel.Factory(myEmoTalkUseCase, geminiUseCase))
+
+    val userRepo = UserRepositoryImpl(PreferencesManager(LocalContext.current))
+    val userUsecase = UserUseCase(userRepo)
+    val userViewModel: UserViewModel = viewModel(factory = UserViewModel.Factory(userUsecase))
 
     Scaffold(
         bottomBar = {
@@ -103,11 +111,11 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("edit-personal-data") {
-                EditPersonalDataScreen(navController = navController)
+                EditPersonalDataScreen(navController = navController, viewModel = userViewModel)
             }
 
             composable("edit-account") {
-                EditAccountScreen(navController = navController)
+                EditAccountScreen(navController = navController, viewModel = userViewModel)
             }
         }
     }

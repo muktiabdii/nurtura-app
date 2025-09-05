@@ -5,12 +5,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -35,8 +33,8 @@ fun RegisterAdditionalInfoScreen(
     val context = LocalContext.current
     val registerState by viewModel.registerUiState.collectAsState()
 
-    when (registerState.state) {
-        is State.Success -> {
+    when (registerState.authState) {
+        is AuthState.Success -> {
             LaunchedEffect(Unit) {
                 navController.navigate("login") {
                     popUpTo("register") { inclusive = true }
@@ -45,8 +43,8 @@ fun RegisterAdditionalInfoScreen(
             }
         }
 
-        is State.Error -> {
-            val message = (registerState.state as State.Error).message
+        is AuthState.Error -> {
+            val message = (registerState.authState as AuthState.Error).message
             LaunchedEffect(message) {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 viewModel.resetRegisterState()
@@ -243,7 +241,7 @@ fun RegisterAdditionalInfoScreen(
                         text = "Selesai",
                         onClick = { viewModel.register() },
                         modifier = Modifier.padding(bottom = 40.dp),
-                        isLoading = registerState.state is State.Loading
+                        isLoading = registerState.authState is AuthState.Loading
                     )
                 }
             }

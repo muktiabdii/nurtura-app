@@ -31,9 +31,37 @@ import com.example.nurtura.ui.common.InputFormField
 import com.example.nurtura.ui.theme.*
 
 @Composable
-fun EditAccountScreen(navController: NavController) {
+fun EditAccountScreen(
+    navController: NavController,
+    viewModel: UserViewModel
+) {
 
-    val user = UserData
+    val context = LocalContext.current
+    val profileState by viewModel.profileState.collectAsState()
+    val userState by viewModel.userState.collectAsState()
+    var name by remember { mutableStateOf(userState.name) }
+    var email by remember { mutableStateOf(userState.email) }
+
+    when (profileState) {
+        is ProfileState.Success -> {
+            LaunchedEffect(Unit) {
+                navController.navigate("profile") {
+                    popUpTo("edit-account") { inclusive = true }
+                }
+                viewModel.resetProfileState()
+            }
+        }
+
+        is ProfileState.Error -> {
+            val message = (profileState as ProfileState.Error).message
+            LaunchedEffect(message) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel.resetProfileState()
+            }
+        }
+
+        else -> Unit
+    }
 
     Box(
         modifier = Modifier
@@ -173,8 +201,8 @@ fun EditAccountScreen(navController: NavController) {
                 )
 
                 InputFormField(
-                    value = user.name,
-                    onValueChange = {  },
+                    value = name,
+                    onValueChange = { name = it },
                     placeholder = ""
                 )
 
@@ -192,8 +220,8 @@ fun EditAccountScreen(navController: NavController) {
                 )
 
                 InputFormField(
-                    value = user.email,
-                    onValueChange = {  },
+                    value = email,
+                    onValueChange = { email = it },
                     placeholder = "masukkan email"
                 )
 
@@ -243,7 +271,8 @@ fun EditAccountScreen(navController: NavController) {
             // save button
             ActionButton(
                 text = "Simpan",
-                onClick = {  }
+                onClick = { viewModel.editAccount(name, email) },
+                isLoading = profileState is ProfileState.Loading
             )
         }
     }

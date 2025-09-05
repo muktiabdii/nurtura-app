@@ -10,11 +10,11 @@ import com.example.nurtura.domain.usecase.UserUseCase
 import kotlinx.coroutines.launch
 
 // general state
-sealed class State {
-    object Idle : State()
-    object Loading : State()
-    object Success : State()
-    data class Error(val message: String) : State()
+sealed class AuthState {
+    object Idle : AuthState()
+    object Loading : AuthState()
+    object Success : AuthState()
+    data class Error(val message: String) : AuthState()
 }
 
 // state register
@@ -27,7 +27,7 @@ data class RegisterUiState(
     val pregnancyAge: Int = 0,
     val healthNotes: String = "",
     val location: String = "",
-    val state: State = State.Idle
+    val authState: AuthState = AuthState.Idle
 )
 
 class AuthViewModel(
@@ -35,16 +35,16 @@ class AuthViewModel(
     private val userUseCase: UserUseCase
 ): ViewModel() {
     // login state
-    private val _loginState = MutableStateFlow<State>(State.Idle)
-    val loginState: StateFlow<State> = _loginState
+    private val _loginAuthState = MutableStateFlow<AuthState>(AuthState.Idle)
+    val loginAuthState: StateFlow<AuthState> = _loginAuthState
 
     // register state
     private val _registerUiState = MutableStateFlow(RegisterUiState())
     val registerUiState: StateFlow<RegisterUiState> = _registerUiState
 
     // forgot password state
-    private val _forgotPasswordState = MutableStateFlow<State>(State.Idle)
-    val forgotPasswordState: StateFlow<State> = _forgotPasswordState
+    private val _forgotPasswordAuthState = MutableStateFlow<AuthState>(AuthState.Idle)
+    val forgotPasswordAuthState: StateFlow<AuthState> = _forgotPasswordAuthState
 
     // update register state
     fun updateUsername(username: String) {
@@ -98,7 +98,7 @@ class AuthViewModel(
 
     // reset state
     fun resetLoginState() {
-        _loginState.value = State.Idle
+        _loginAuthState.value = AuthState.Idle
     }
 
     fun resetRegisterState() {
@@ -106,22 +106,22 @@ class AuthViewModel(
     }
 
     fun resetForgotPasswordState() {
-        _forgotPasswordState.value = State.Idle
+        _forgotPasswordAuthState.value = AuthState.Idle
     }
 
     // function login
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _loginState.value = State.Loading
+            _loginAuthState.value = AuthState.Loading
             val result = authUseCase.login(email, password)
             result.onSuccess { uid ->
                 if (uid.isNotEmpty()) {
                     loadUser(uid)
                 }
 
-                _loginState.value = State.Success
+                _loginAuthState.value = AuthState.Success
             }.onFailure { e ->
-                _loginState.value = State.Error(e.message ?: "Login gagal")
+                _loginAuthState.value = AuthState.Error(e.message ?: "Login gagal")
             }
         }
     }
@@ -137,7 +137,7 @@ class AuthViewModel(
     // function register
     fun register() {
         viewModelScope.launch {
-            _registerUiState.value = _registerUiState.value.copy(state = State.Loading)
+            _registerUiState.value = _registerUiState.value.copy(authState = AuthState.Loading)
             val currentState = _registerUiState.value
             authUseCase.register(
                 name = currentState.username,
@@ -149,7 +149,7 @@ class AuthViewModel(
                 location = currentState.location
             ) { success, message ->
                 _registerUiState.value = _registerUiState.value.copy(
-                    state = if (success) State.Success else State.Error(message ?: "Register gagal")
+                    authState = if (success) AuthState.Success else AuthState.Error(message ?: "Register gagal")
                 )
             }
         }
@@ -160,9 +160,9 @@ class AuthViewModel(
         email: String
     ) {
         viewModelScope.launch {
-            _forgotPasswordState.value = State.Loading
+            _forgotPasswordAuthState.value = AuthState.Loading
             authUseCase.forgotPassword(email) { success, message ->
-                _forgotPasswordState.value = if (success) State.Success else State.Error(message ?: "Forgot password gagal")
+                _forgotPasswordAuthState.value = if (success) AuthState.Success else AuthState.Error(message ?: "Forgot password gagal")
             }
         }
     }
