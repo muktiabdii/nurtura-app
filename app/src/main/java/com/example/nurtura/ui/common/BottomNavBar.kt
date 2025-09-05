@@ -10,8 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -32,15 +35,33 @@ fun BottomNavBar(
 ) {
     Box(
         modifier = Modifier
-            .shadow(
-                elevation = 6.dp,
-                spotColor = Color(0x33000000),
-                ambientColor = Color(0x33000000)
-            )
             .fillMaxWidth()
             .height(80.dp)
-            .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
             .background(color = White)
+            .drawWithContent {
+                drawContent()
+                drawIntoCanvas { canvas ->
+                    val paint = Paint()
+                    val frameworkPaint = paint.asFrameworkPaint()
+
+                    val shadowColor = Color.Black.copy(alpha = 0.04f)
+                    frameworkPaint.color = shadowColor.toArgb()
+                    frameworkPaint.setShadowLayer(
+                        3.dp.toPx(),
+                        0f,
+                        1.5.dp.toPx(),
+                        shadowColor.toArgb()
+                    )
+
+                    canvas.drawRect(
+                        left = 0f,
+                        top = 0f,
+                        right = size.width,
+                        bottom = 6.dp.toPx(),
+                        paint = paint
+                    )
+                }
+            }
             .padding(top = 13.dp, bottom = 10.dp)
     ) {
         Row(
