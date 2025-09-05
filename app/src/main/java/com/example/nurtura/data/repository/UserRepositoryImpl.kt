@@ -82,8 +82,7 @@ class UserRepositoryImpl(private val preferencesManager: PreferencesManager) : U
     // function untuk hapus akun
     override suspend fun deleteAccount(uid: String) {
         try {
-            // hapus user dari firebase
-            auth.currentUser?.delete()?.await()
+            // hapus user dari database
             database.child("users").child(uid).removeValue().await()
 
             // hapus user dari datastore
@@ -91,10 +90,13 @@ class UserRepositoryImpl(private val preferencesManager: PreferencesManager) : U
 
             // hapus user dari cache
             UserData.clear()
-        }
-        catch (e: Exception) {
+
+            // terakhir hapus user dari firebase auth
+            auth.currentUser?.delete()?.await()
+        } catch (e: Exception) {
             e.printStackTrace()
             throw e
         }
     }
+
 }

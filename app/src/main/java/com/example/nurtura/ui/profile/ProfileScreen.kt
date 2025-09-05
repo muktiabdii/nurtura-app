@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.nurtura.R
 import com.example.nurtura.cache.UserData
+import com.example.nurtura.ui.common.ProfileDialog
+import com.example.nurtura.ui.common.SettingItem
 import com.example.nurtura.ui.theme.Accent
 import com.example.nurtura.ui.theme.Black
 import com.example.nurtura.ui.theme.Grey
@@ -48,7 +50,41 @@ fun ProfileScreen(
     viewModel: UserViewModel
 ) {
 
+    var showDialogLogout by remember { mutableStateOf(false) }
+    var showDialogDelete by remember { mutableStateOf(false) }
     val user = UserData
+
+    if (showDialogLogout) {
+        ProfileDialog(
+            title = "Apakah kamu yakin untuk Logout dari Nurtura?",
+            action = "Logout",
+            onConfirmDelete = {
+                viewModel.logout()
+                rootNavController.navigate("login") {
+                    popUpTo(0) { inclusive = true }
+                }
+                showDialogLogout = false
+            },
+            onCancel = { showDialogLogout = false },
+            onDismissRequest = { showDialogLogout = false }
+        )
+    }
+
+    if (showDialogDelete) {
+        ProfileDialog(
+            title = "Apakah kamu yakin untuk menghapus akun Nurtura?",
+            action = "Hapus Akun",
+            onConfirmDelete = {
+                viewModel.deleteAccount()
+                rootNavController.navigate("login") {
+                    popUpTo(0) { inclusive = true }
+                    showDialogDelete = false
+                }
+            },
+            onCancel = { showDialogDelete = false },
+            onDismissRequest = { showDialogDelete = false }
+        )
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -268,12 +304,7 @@ fun ProfileScreen(
                     SettingItem(
                         icon = R.drawable.ic_delete_acc,
                         title = "Hapus akun",
-                        onClick = {
-                            viewModel.deleteAccount()
-                            rootNavController.navigate("login") {
-                                popUpTo(0) { inclusive = true }
-                            }
-                        }
+                        onClick = { showDialogDelete = true }
                     )
 
                     SettingItem(
@@ -281,82 +312,12 @@ fun ProfileScreen(
                         title = "Keluar",
                         titleColor = Color(0xFFC80000),
                         iconTint = Color(0xFFC80000),
-                        onClick = {
-                            viewModel.logout()
-                            rootNavController.navigate("login") {
-                                popUpTo(0) { inclusive = true }
-                            }
-                        }
+                        onClick = { showDialogLogout = true }
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-        }
-    }
-}
-
-@Composable
-fun SettingItem(
-    icon: Int,
-    title: String,
-    titleColor: Color = Color.Black,
-    iconTint: Color = Color.Gray,
-    hasSwitch: Boolean = false,
-    initialSwitchState: Boolean = false,
-    onSwitchChange: (Boolean) -> Unit = {},
-    onClick: () -> Unit = {}
-) {
-    var switchChecked by remember { mutableStateOf(initialSwitchState) }
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = icon),
-            contentDescription = title,
-            tint = iconTint,
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Text(
-            text = title,
-            fontSize = 14.sp,
-            fontFamily = FontFamily(Font(R.font.raleway_medium)),
-            color = titleColor,
-            modifier = Modifier.weight(1f)
-        )
-
-        if (hasSwitch) {
-            Switch(
-                checked = switchChecked,
-                onCheckedChange = {
-                    switchChecked = it
-                    onSwitchChange(it)
-                },
-                modifier = Modifier.scale(0.7f),
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = White,
-                    checkedTrackColor = Primary.copy(alpha = 0.5f),
-                    uncheckedThumbColor = White,
-                    uncheckedTrackColor = Color(0xFFE0E0E0)
-                )
-            )
-
-
-        } else {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_right),
-                contentDescription = "Navigate",
-                tint = Black,
-                modifier = Modifier.size(20.dp)
-            )
         }
     }
 }
