@@ -3,6 +3,7 @@ package com.example.nurtura.ui.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -86,6 +87,7 @@ fun HomeScreen(
                             modifier = Modifier
                                 .size(45.dp)
                                 .clip(CircleShape)
+                                .clickable{ navController.navigate("profile") }
                         )
 
                         Image(
@@ -135,7 +137,10 @@ fun HomeScreen(
                 ClickableSearchBar(onClick = { navController.navigate("food-recs") })
 
                 // nurtura card
-                AskNurturaCard(onAskNurturaClick = { navController.navigate("record") })
+                AskNurturaCard(
+                    onFoodRecsClick = { navController.navigate("food-recs") },
+                    onAskNurturaClick = { navController.navigate("record") }
+                )
 
                 // trimester
                 TrimesterCard(

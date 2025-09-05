@@ -2,6 +2,7 @@ package com.example.nurtura.ui.myemotalk
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -114,7 +116,9 @@ fun FoodRecsScreen(
                             Image(
                                 painter = painterResource(id = R.drawable.ic_mic),
                                 contentDescription = "Voice Search",
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clickable { navController.navigate("record") }
                             )
                         }
                     }
@@ -156,13 +160,14 @@ fun FoodRecsScreen(
                 // title
                 item {
                     Text(
-                        text = "Rekomendasi Makanan",
+                        text = "Rekomendasi Makanan Hari Ini",
                         fontSize = 20.sp,
                         fontFamily = FontFamily(Font(R.font.raleway_bold)),
                         color = Black,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = 20.dp),
+                        textAlign = TextAlign.Center
                     )
                 }
 

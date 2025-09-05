@@ -84,7 +84,9 @@ fun TrimesterCard(
                 Image(
                     painter = painterResource(id = R.drawable.baby_home),
                     contentDescription = null,
-                    modifier = Modifier.size(size = 120.dp),
+                    modifier = Modifier
+                        .size(size = 120.dp)
+                        .clickable { onReadMoreClick(currentTrimester) },
                     contentScale = ContentScale.Fit
                 )
             }

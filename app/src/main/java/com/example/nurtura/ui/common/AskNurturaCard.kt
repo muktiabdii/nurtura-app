@@ -29,7 +29,8 @@ import com.example.nurtura.ui.theme.LightHover
 @Composable
 fun AskNurturaCard(
     modifier: Modifier = Modifier,
-    onAskNurturaClick: () -> Unit = {}
+    onAskNurturaClick: () -> Unit = {},
+    onFoodRecsClick: () -> Unit = {}
 ) {
     Card(
         modifier = modifier
@@ -54,6 +55,7 @@ fun AskNurturaCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 16.dp)
+                    .clickable { onFoodRecsClick() },
             ) {
                 Text(
                     text = "Lagi pengen makan apa nih, Bun? 🍽️",
