@@ -1,27 +1,21 @@
 package com.example.nurtura.ui.splash
 
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -47,7 +41,7 @@ fun SplashScreen(
     LaunchedEffect(true) {
         startAnimation = true
 
-        // Step 1: Logo fade in di tengah
+        // step 1: logo fade in di tengah
         logoAlpha.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 1200)
@@ -55,7 +49,7 @@ fun SplashScreen(
 
         delay(800)
 
-        // Step 2: Logo naik ke atas sedikit sambil text fade in
+        // step 2: logo naik ke atas sedikit sambil text fade in
         launch {
             logoOffsetY.animateTo(
                 targetValue = -30f,
@@ -63,8 +57,8 @@ fun SplashScreen(
             )
         }
 
-        // Step 3: Text fade in bersamaan dengan logo naik
-        delay(200) // slight delay untuk efek yang lebih smooth
+        // step 3: text fade in bersamaan dengan logo naik
+        delay(200)
         textAlpha.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 1000)
@@ -72,7 +66,7 @@ fun SplashScreen(
 
         delay(1500)
 
-        // Navigation logic
+        // navigation logic
         if (!isOnBoardingShown) {
             navController.navigate("onboarding") {
                 popUpTo("splash") { inclusive = true }

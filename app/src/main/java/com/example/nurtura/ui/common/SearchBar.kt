@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.AbsoluteCutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,8 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nurtura.R
@@ -31,7 +28,6 @@ import com.example.nurtura.ui.theme.LightActive
 fun SearchBar(
     modifier: Modifier = Modifier,
     placeholder: String = "Temukan rekomendasi makanan hari ini",
-    onSearchClick: () -> Unit = {},
     onValueChange: (String) -> Unit = {}
 ) {
     var searchText by remember { mutableStateOf("") }

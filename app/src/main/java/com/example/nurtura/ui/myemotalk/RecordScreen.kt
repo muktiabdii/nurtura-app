@@ -138,14 +138,14 @@ fun RecordScreen(
             }
         }
 
-        // ================= BAGIAN BAWAH =================
         Column(
             modifier = Modifier
-                .align(Alignment.BottomCenter) // nempel di bawah
+                .align(Alignment.BottomCenter)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Animated Sound Waves
+
+            // sound wave
             AnimatedSoundWaves(
                 isRecording = isRecording,
                 modifier = Modifier
@@ -155,7 +155,6 @@ fun RecordScreen(
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            // Static Display Text
             Text(
                 text = "Aku lagi sedih banget, enaknya makan apa ya . . .",
                 color = Black,
@@ -197,7 +196,6 @@ fun AnimatedSoundWaves(
     isRecording: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val density = LocalDensity.current
     val infiniteTransition = rememberInfiniteTransition(label = "soundWaves")
 
     val waveOffset by infiniteTransition.animateFloat(

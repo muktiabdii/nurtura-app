@@ -1,7 +1,5 @@
 package com.example.nurtura.ui.mydoc
 
-import android.R.attr.enabled
-import android.R.attr.onClick
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -250,6 +248,7 @@ fun PaymentConfirmationScreen(
             }
 
             else {
+
                 // payment details
                 Text(
                     text = "Rincian Pembayaran",

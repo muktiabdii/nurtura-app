@@ -1,7 +1,5 @@
 package com.example.nurtura.cache
 
-import com.example.nurtura.domain.model.Food
-
 object UserData {
     var uid: String = ""
     var name: String = ""

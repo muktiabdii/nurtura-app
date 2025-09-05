@@ -1,7 +1,6 @@
 package com.example.nurtura.data.repository
 
 import com.example.nurtura.BuildConfig
-import com.example.nurtura.R
 import com.example.nurtura.cache.UserData
 import com.example.nurtura.data.model.GeminiRequest
 import com.example.nurtura.data.model.GeminiResponse
@@ -18,6 +17,7 @@ class GeminiRepositoryImpl() : GeminiRepository {
     private val trimester = UserData.pregnancyAge
     private val healthNotes = UserData.healthNotes
 
+    // function to get reply from gemini
     override suspend fun getGeminiReply(emotion: String): Pair<String?, Boolean> {
         return try {
             val finalPrompt = buildString {

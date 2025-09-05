@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.nurtura.cache.UserData
 import com.example.nurtura.domain.model.Food
 import com.example.nurtura.domain.usecase.GeminiUseCase
 import com.example.nurtura.domain.usecase.MyEmoTalkUseCase
@@ -43,10 +42,12 @@ class MyEmoTalkViewModel(
     private val _foodRecommendations = MutableStateFlow<List<Food>>(emptyList())
     val foodRecommendations: StateFlow<List<Food>> = _foodRecommendations
 
+    // function to reset foodId
     fun resetFoodId() {
         _foodId.value = null
     }
 
+    // function to start recording
     fun startRecording(context: Context) {
         audioFile = File(context.cacheDir, "recorded_audio.wav")
         recorder = AudioWavRecorder(audioFile!!)
@@ -54,6 +55,7 @@ class MyEmoTalkViewModel(
         _isRecording.value = true
     }
 
+    // function to stop recording and send
     fun stopRecordingAndSend() {
         recorder?.stopRecording()
         _isRecording.value = false
@@ -81,6 +83,7 @@ class MyEmoTalkViewModel(
         }
     }
 
+    // function to get food recommendation
     fun getFoodRecommendation(emotion: String) {
         viewModelScope.launch {
             val (id, success) = geminiUseCase.getSaranGemini(emotion)
@@ -91,6 +94,7 @@ class MyEmoTalkViewModel(
         }
     }
 
+    // function to load food detail
     fun loadFoodDetail(foodId: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -100,6 +104,7 @@ class MyEmoTalkViewModel(
         }
     }
 
+    // function to load all food recommendations
     fun loadAllFoodRecommendations() {
         viewModelScope.launch {
             _isLoading.value = true

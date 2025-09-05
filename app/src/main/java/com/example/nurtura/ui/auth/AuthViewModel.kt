@@ -34,6 +34,7 @@ class AuthViewModel(
     private val authUseCase: AuthUseCase,
     private val userUseCase: UserUseCase
 ): ViewModel() {
+
     // login state
     private val _loginAuthState = MutableStateFlow<AuthState>(AuthState.Idle)
     val loginAuthState: StateFlow<AuthState> = _loginAuthState

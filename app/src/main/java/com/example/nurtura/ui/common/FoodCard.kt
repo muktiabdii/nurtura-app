@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,7 +31,6 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nurtura.domain.model.Food
@@ -60,7 +58,8 @@ fun FoodCard(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Gambar di atas
+
+            // image
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -76,14 +75,13 @@ fun FoodCard(
                 )
             }
 
-            // Nama kiri atas dan rating kanan bawah di bawah gambar
+            // title and rating
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f) // supaya Box mengisi sisa ruang
+                    .weight(1f)
                     .padding(start = 8.dp, bottom = 4.dp, end = 8.dp)
             ) {
-                // Nama kiri atas
                 food.name?.let {
                     Text(
                         text = it,
@@ -98,7 +96,6 @@ fun FoodCard(
                     )
                 }
 
-                // Rating kanan bawah
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp),

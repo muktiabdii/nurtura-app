@@ -14,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -25,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.nurtura.R
-import com.example.nurtura.domain.model.Food
 import com.example.nurtura.ui.theme.Alt3
 import com.example.nurtura.ui.theme.Black
 import com.example.nurtura.ui.theme.White
@@ -36,18 +34,19 @@ fun FoodDetailScreen(
     id: String,
     viewModel: MyEmoTalkViewModel
 ) {
-    // State dari ViewModel
+
+    // state
     val food by viewModel.foodDetail.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
-    // Trigger load saat screen pertama kali dibuka
     LaunchedEffect(id) {
         viewModel.loadFoodDetail(id)
     }
 
     Box(modifier = Modifier.fillMaxSize().background(White)) {
         if (isLoading) {
-            // Loading indicator
+
+            // loading indicator
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
@@ -55,7 +54,8 @@ fun FoodDetailScreen(
             food?.let { foodData ->
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item {
-                        // Header
+
+                        // header
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -75,7 +75,8 @@ fun FoodDetailScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                // Back button
+
+                                // back button
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_back_darker),
                                     contentDescription = "Back",
@@ -84,7 +85,7 @@ fun FoodDetailScreen(
                                         .clickable { navController.popBackStack() }
                                 )
 
-                                // Title
+                                // title
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text(
                                         text = "Nurtura Food Recommendation",
@@ -114,7 +115,7 @@ fun FoodDetailScreen(
                             }
                         }
 
-                        // Main card
+                        // main card
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -180,7 +181,6 @@ fun FoodDetailScreen(
                     }
                 }
             } ?: run {
-                // Jika food null tapi loading false, tampil pesan kosong
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = "Tidak ada data makanan",

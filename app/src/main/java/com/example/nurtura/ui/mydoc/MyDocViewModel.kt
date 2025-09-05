@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.nurtura.domain.model.CloudinaryResponse
-import com.example.nurtura.domain.usecase.AuthUseCase
 import com.example.nurtura.domain.usecase.CloudinaryUseCase
-import com.example.nurtura.domain.usecase.UserUseCase
-import com.example.nurtura.ui.auth.AuthViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,6 +18,7 @@ class MyDocViewModel(private val cloudinaryUseCase: CloudinaryUseCase) : ViewMod
     private val _loading = MutableStateFlow(false)
     val loading = _loading.asStateFlow()
 
+    // function upload image
     fun uploadImage(uri: Uri) {
         viewModelScope.launch {
             _loading.value = true

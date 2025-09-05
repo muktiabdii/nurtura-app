@@ -14,6 +14,7 @@ class CloudinaryRepositoryImpl(
     private val context: Context
 ) : CloudinaryRepository {
 
+    // function upload image
     override suspend fun uploadImage(uri: Uri): CloudinaryResponse? {
         val inputStream = context.contentResolver.openInputStream(uri)
         val bytes = inputStream?.readBytes() ?: return null

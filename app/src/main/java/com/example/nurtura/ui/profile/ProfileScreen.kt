@@ -9,25 +9,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -37,7 +31,6 @@ import com.example.nurtura.ui.common.ProfileDialog
 import com.example.nurtura.ui.common.SettingItem
 import com.example.nurtura.ui.theme.Accent
 import com.example.nurtura.ui.theme.Black
-import com.example.nurtura.ui.theme.Grey
 import com.example.nurtura.ui.theme.Light
 import com.example.nurtura.ui.theme.Primary
 import com.example.nurtura.ui.theme.White
@@ -92,13 +85,13 @@ fun ProfileScreen(
             .background(White)
     ) {
         item {
-            // Header Section
+
+            // header
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(280.dp)
             ) {
-                // Background header image
                 Image(
                     painter = painterResource(id = R.drawable.header_profile),
                     contentDescription = "Header background",
@@ -106,21 +99,19 @@ fun ProfileScreen(
                     contentScale = ContentScale.FillBounds
                 )
 
-                // Profile content overlay
+                // profile
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Top bar with icons
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        // Profile picture
                         Image(
                             painter = painterResource(id = R.drawable.ic_user),
                             contentDescription = "Profile picture",
@@ -134,7 +125,7 @@ fun ProfileScreen(
 
                         Spacer(modifier = Modifier.width(18.dp))
 
-                        // Name and location
+                        // name and location
                         Column(
                             modifier = Modifier.weight(1f)
                         ) {
@@ -153,7 +144,7 @@ fun ProfileScreen(
                             )
                         }
 
-                        // Action buttons
+                        // action buttons
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             verticalAlignment = Alignment.CenterVertically
@@ -169,7 +160,7 @@ fun ProfileScreen(
                                     painter = painterResource(id = R.drawable.ic_share),
                                     contentDescription = "Share",
                                     tint = Primary,
-                                    modifier = Modifier.size(18.dp) // sesuaikan ukuran ikon
+                                    modifier = Modifier.size(18.dp)
                                 )
                             }
 
@@ -192,7 +183,7 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
-                    // Pregnancy info card
+                    // pregnancy info card
                     Card(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -250,7 +241,7 @@ fun ProfileScreen(
         item {
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Settings section
+            // settings section
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -274,7 +265,7 @@ fun ProfileScreen(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Notification setting
+                    // notification setting
                     SettingItem(
                         icon = R.drawable.ic_notif_stroke,
                         title = "Notifikasi",
@@ -282,7 +273,7 @@ fun ProfileScreen(
                         onSwitchChange = { /* Handle switch */ }
                     )
 
-                    // Other menu items
+                    // other menu items
                     SettingItem(
                         icon = R.drawable.ic_faq,
                         title = "FAQ",

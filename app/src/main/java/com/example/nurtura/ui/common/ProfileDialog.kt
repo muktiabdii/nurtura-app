@@ -26,9 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -63,7 +61,8 @@ fun ProfileDialog(
                     .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Title
+
+                // title
                 Text(
                     text = title,
                     fontSize = 16.sp,
@@ -74,7 +73,7 @@ fun ProfileDialog(
                     modifier = Modifier.padding(bottom = 10.dp)
                 )
 
-                // Illustration
+                // image
                 Box(
                     modifier = Modifier
                         .size(150.dp)
@@ -88,7 +87,7 @@ fun ProfileDialog(
                     )
                 }
 
-                // Action buttons
+                // action button
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)

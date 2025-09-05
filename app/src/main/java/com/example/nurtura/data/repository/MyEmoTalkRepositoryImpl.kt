@@ -16,6 +16,7 @@ class MyEmoTalkRepositoryImpl(private val context: Context) : MyEmoTalkRepositor
     val db = FirebaseProvider.database
     val user = UserData.uid
 
+    // function to detect emotion
     override suspend fun detectEmotion(file: MultipartBody.Part): EmotionDetectionResponse? {
         val response = ApiEmotionDetectionService.instance.detectEmotion(file)
         return if (response.isSuccessful) {
@@ -25,6 +26,7 @@ class MyEmoTalkRepositoryImpl(private val context: Context) : MyEmoTalkRepositor
         }
     }
 
+    // function to get food detail
     override suspend fun getFoodDetail(id: String): Food? {
         return try {
             val snapshot = db.child("users")
@@ -48,6 +50,7 @@ class MyEmoTalkRepositoryImpl(private val context: Context) : MyEmoTalkRepositor
         }
     }
 
+    // function to get all of food recommendations
     override suspend fun getAllFoodRecommendations(): List<Food> {
         return try {
             val snapshot = db.child("users")

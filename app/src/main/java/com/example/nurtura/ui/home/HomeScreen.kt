@@ -2,7 +2,6 @@ package com.example.nurtura.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,7 +25,6 @@ import androidx.navigation.NavController
 import com.example.nurtura.R
 import com.example.nurtura.cache.UserData
 import com.example.nurtura.cache.doctorList
-import com.example.nurtura.domain.model.Doctor
 import com.example.nurtura.ui.common.AskNurturaCard
 import com.example.nurtura.ui.common.ClickableSearchBar
 import com.example.nurtura.ui.common.DoctorCard
@@ -35,10 +33,7 @@ import com.example.nurtura.ui.theme.Black
 import com.example.nurtura.ui.theme.White
 
 @Composable
-fun HomeScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
+fun HomeScreen(navController: NavController) {
 
     val doctors = doctorList
 

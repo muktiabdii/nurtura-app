@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-// Profile state
+// profile state
 sealed class ProfileState {
     object Idle : ProfileState()
     object Loading : ProfileState()
@@ -17,7 +17,7 @@ sealed class ProfileState {
     data class Error(val message: String) : ProfileState()
 }
 
-// User state
+// user state
 data class UserState(
     val uid: String = "",
     val name: String = "",

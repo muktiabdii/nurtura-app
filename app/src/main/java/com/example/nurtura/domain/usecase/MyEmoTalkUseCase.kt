@@ -6,14 +6,18 @@ import com.example.nurtura.domain.repository.MyEmoTalkRepository
 import okhttp3.MultipartBody
 
 class MyEmoTalkUseCase(private val repository: MyEmoTalkRepository) {
+
+    // function to detect emotion
     suspend operator fun invoke(file: MultipartBody.Part): EmotionDetectionResponse? {
         return repository.detectEmotion(file)
     }
 
+    // function to get food detail
     suspend fun getFoodDetail(id: String): Food? {
         return repository.getFoodDetail(id)
     }
 
+    // function to get all of foods recommendations
     suspend fun getAllFoodRecommendations(): List<Food> {
         return repository.getAllFoodRecommendations()
     }

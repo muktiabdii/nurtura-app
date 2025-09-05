@@ -17,7 +17,6 @@ import com.example.nurtura.data.repository.CloudinaryRepositoryImpl
 import com.example.nurtura.data.repository.GeminiRepositoryImpl
 import com.example.nurtura.data.repository.MyEmoTalkRepositoryImpl
 import com.example.nurtura.data.repository.UserRepositoryImpl
-import com.example.nurtura.domain.repository.GeminiRepository
 import com.example.nurtura.domain.usecase.CloudinaryUseCase
 import com.example.nurtura.domain.usecase.GeminiUseCase
 import com.example.nurtura.domain.usecase.MyEmoTalkUseCase
