@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.example.nurtura.R
 import com.example.nurtura.ui.theme.White
 
@@ -36,8 +37,9 @@ fun SplashScreen(
     viewModel: SplashViewModel
 ) {
     var startAnimation by remember { mutableStateOf(false) }
-    val alphaAnim = remember { Animatable(0f) }
-    val textReveal = remember { Animatable(0f) }
+    val logoAlpha = remember { Animatable(0f) }
+    val logoOffsetY = remember { Animatable(0f) }
+    val textAlpha = remember { Animatable(0f) }
 
     val isOnBoardingShown by viewModel.isOnBoardingShown().collectAsState(initial = false)
     val userUid by viewModel.getUserUidFlow().collectAsState(initial = null)
@@ -45,39 +47,43 @@ fun SplashScreen(
     LaunchedEffect(true) {
         startAnimation = true
 
-        // fade-in logo
-        alphaAnim.animateTo(
+        // Step 1: Logo fade in di tengah
+        logoAlpha.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 1500)
+            animationSpec = tween(durationMillis = 1200)
         )
 
-        delay(500)
+        delay(800)
 
-        // reveal text
-        textReveal.animateTo(
+        // Step 2: Logo naik ke atas sedikit sambil text fade in
+        launch {
+            logoOffsetY.animateTo(
+                targetValue = -30f,
+                animationSpec = tween(durationMillis = 800)
+            )
+        }
+
+        // Step 3: Text fade in bersamaan dengan logo naik
+        delay(200) // slight delay untuk efek yang lebih smooth
+        textAlpha.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 1000)
         )
 
-        delay(2000)
+        delay(1500)
 
-        // kalau onboarding belum ditampilkan
+        // Navigation logic
         if (!isOnBoardingShown) {
             navController.navigate("onboarding") {
                 popUpTo("splash") { inclusive = true }
             }
         }
-
         else {
-
-            // kalau sudah onboarding tapi belum login
             if (userUid.isNullOrEmpty()) {
                 navController.navigate("login") {
                     popUpTo("splash") { inclusive = true }
                 }
             }
-
-            // kalau sudah onboarding dan sudah login
             else {
                 viewModel.loadUser(userUid!!)
                 navController.navigate("main") {
@@ -116,39 +122,30 @@ fun SplashScreen(
         )
 
         // logo dan text
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(200.dp)
-                    .alpha(alphaAnim.value)
+                    .alpha(logoAlpha.value)
+                    .offset(y = logoOffsetY.value.dp)
             )
 
-            Spacer(modifier = Modifier.height(5.dp))
-
-            Box(
-                modifier = Modifier
-                    .width(200.dp)
-                    .height(50.dp)
-                    .clipToBounds(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "Nurtura",
-                    fontSize = 50.sp,
-                    fontFamily = FontFamily(Font(R.font.raleway_bold)),
-                    style = androidx.compose.ui.text.TextStyle(
-                        brush = Brush.linearGradient(
-                            colors = listOf(Color(0xFF233247), Color(0xFF5980B7))
-                        )
-                    ),
-                    modifier = Modifier.graphicsLayer {
-                        scaleX = textReveal.value
-                        transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 0.5f) // mulai dari kiri
-                    }
-                )
-            }
+            Text(
+                text = "Nurtura",
+                fontSize = 50.sp,
+                fontFamily = FontFamily(Font(R.font.raleway_bold)),
+                style = androidx.compose.ui.text.TextStyle(
+                    brush = Brush.linearGradient(
+                        colors = listOf(Color(0xFF233247), Color(0xFF5980B7))
+                    )
+                ),
+                modifier = Modifier.alpha(textAlpha.value)
+            )
         }
     }
 }
