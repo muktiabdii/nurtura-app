@@ -42,7 +42,11 @@ import com.example.nurtura.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController) {
+fun ProfileScreen(
+    navController: NavController,
+    rootNavController: NavController,
+    viewModel: UserViewModel
+) {
 
     val user = UserData
 
@@ -264,15 +268,25 @@ fun ProfileScreen(navController: NavController) {
                     SettingItem(
                         icon = R.drawable.ic_delete_acc,
                         title = "Hapus akun",
-                        onClick = { /* Handle delete account */ }
+                        onClick = {
+                            viewModel.deleteAccount()
+                            rootNavController.navigate("login") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
                     )
 
                     SettingItem(
                         icon = R.drawable.ic_logout,
                         title = "Keluar",
-                        titleColor = Color.Red,
-                        iconTint = Color.Red,
-                        onClick = { /* Handle logout */ }
+                        titleColor = Color(0xFFC80000),
+                        iconTint = Color(0xFFC80000),
+                        onClick = {
+                            viewModel.logout()
+                            rootNavController.navigate("login") {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        }
                     )
                 }
             }
@@ -298,7 +312,8 @@ fun SettingItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp),
+            .padding(vertical = 12.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

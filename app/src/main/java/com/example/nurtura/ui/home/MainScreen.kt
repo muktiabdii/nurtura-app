@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -37,7 +38,7 @@ import com.example.nurtura.ui.profile.UserViewModel
 import com.example.nurtura.ui.trimester.TrimesterScreen
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(rootNavController: NavController) {
     val navController = rememberNavController()
     val navBackStackEntry = navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry.value?.destination?.route
@@ -79,7 +80,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
 
             composable("profile") {
-                ProfileScreen(navController = navController)
+                ProfileScreen(navController = navController, rootNavController = rootNavController, viewModel = userViewModel)
             }
 
             composable("trimester/{trimesterNumber}") { backStackEntry ->

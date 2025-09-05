@@ -91,7 +91,13 @@ fun RegisterAdditionalInfoScreen(
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .clickable { viewModel.previousStep() },
+                    .clickable {
+                        if (registerState.step > 0) {
+                            viewModel.previousStep()
+                        } else {
+                            navController.navigate("register")
+                        }
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Image(

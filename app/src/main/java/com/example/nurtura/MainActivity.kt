@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("main") {
-                            MainScreen()
+                            MainScreen(rootNavController = navController)
                         }
                     }
                 }

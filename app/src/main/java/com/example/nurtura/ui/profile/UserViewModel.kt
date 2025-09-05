@@ -116,6 +116,25 @@ class UserViewModel(private val userUseCase: UserUseCase) : ViewModel() {
         )
     }
 
+    // function logout
+    fun logout() {
+        viewModelScope.launch {
+            userUseCase.logout()
+        }
+    }
+
+    // function delete account
+    fun deleteAccount() {
+        viewModelScope.launch {
+            try {
+                val uid = _userState.value.uid
+                userUseCase.deleteAccount(uid)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     class Factory(private val userUseCase: UserUseCase) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
